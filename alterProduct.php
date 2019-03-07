@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <?php
+    include_once "classes.php";
+    // check that you are logged in otherwise reroute to login page
+
+    /*if(!isset($_COOKIE['administrator'])) {
+                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php\'">';
+    }*/ //enable when tables are complete
+
+    // create a product object
+
+    $productObject = new Product;
+
+    //check if the object has been saved
+
+    if(isset($_POST['productSave'])) {
+        $productID = filter_input(INPUT_POST, 'productID', FILTER_SANITIZE_MAGIC_QUOTES);
+        $productName = filter_input(INPUT_POST, 'productName', FILTER_SANITIZE_MAGIC_QUOTES);
+        $productLine = filter_input(INPUT_POST, 'productLine', FILTER_SANITIZE_SPECIAL_CHARS);
+        $productScale = filter_input(INPUT_POST, 'productScale', FILTER_SANITIZE_SPECIAL_CHARS);
+        $productVendor = filter_input(INPUT_POST, 'productVendor', FILTER_SANITIZE_SPECIAL_CHARS);
+        $productDescription = filter_input(INPUT_POST, 'productDescription', FILTER_SANITIZE_SPECIAL_CHARS);
+        $quantityInStock = filter_input(INPUT_POST, 'quantityInStock', FILTER_SANITIZE_SPECIAL_CHARS);
+        $buyPrice = filter_input(INPUT_POST, 'buyPrice', FILTER_SANITIZE_SPECIAL_CHARS);
+        $MSRP = filter_input(INPUT_POST, 'MSRP', FILTER_SANITIZE_SPECIAL_CHARS);
+        
+        
+        $productObject->productCode = $productID;
+        $productObject->productName = $productName;
+        $productObject->productLine = $productLine;
+        $productObject->productScale = $productScale;
+        $productObject->productVendor = $productVendor;
+        $productObject->productDescription = $productDescription;
+        $productObject->quantityInStock = $quantityInStock;
+        $productObject->buyPrice = $buyPrice;
+        $productObject->MSRP = $MSRP;
+        $productObject->update_product();
+        echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=products\'">';
+    }
+
+    ?>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+    <script src="main.js"></script>
+</head>
+<body>
+    <header>
+        <a href="admin.php"><img src="/uploads/productImg/Centennial-Light.jpg"></a>
+    </header>
+    <nav>
+        <ul>
+            <li>
+                <a href="admin.php?page=orders">Ordrar</a>
+            </li>
+            <li>
+                <a href="admin.php?page=products">Produkter</a>
+            </li>
+            <li>
+                <a href="admin.php?page=productlines">Kategorier</a>
+            </li>
+            <li>
+                <a href="admin.php?page=customers">Kunder</a>
+            </li>
+            <li>
+                <a href="admin.php?page=administrators">Administratörer</a>
+            </li>
+            <li>
+                <a href="admin.php?page=profile">Min Profil</a>
+            </li>
+        </ul>
+    </nav>   
+      
+    <main>
+        <!-- List the different info -->
+        <?php
+        //fetch the admin to alter from post
+
+        $productID = filter_input(INPUT_POST, 'number', FILTER_SANITIZE_MAGIC_QUOTES);
+
+        $productObject->productCode = $productID;
+
+        $result = $productObject->get_product();
+        $row = $result->fetch();
+
+        ?>
+        <form action="alterProduct.php" method="post">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Produktnummer</td>
+                        <td><input type="hidden" name="productID" value="<?php echo $row['productCode']; ?>">
+                            <input type="text" value="<?php echo $row['productCode']; ?>" disabled></td>
+                    </tr>
+                    <tr>
+                        <td>Produktnamn</td>
+                        <td><input type="text" name="productName" value="<?php echo $row['productName']; ?>"></td>
+                    </tr>
+                    <tr>
+                        <td>Kategori</td>
+                        <td><select name="productLine"><?php 
+                        $pdo = connect_admin();
+                        $uniqueProductlines = productline_names($pdo);
+
+                        while($row2 = $uniqueProductlines->fetch()){
+                            if($row2['productLine']==$row['productLine']) {  
+                            ?>
+                                <option value="<?php echo $row2['productLine'] ?>" selected><?php echo $row2['productLine'] ?></option>
+                            <?php
+                            } else {
+                            ?>
+                                <option value="<?php echo $row2['productLine'] ?>"><?php echo $row2['productLine'] ?></option>
+                            <?php
+                            }
+                        }
+                        ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Skala</td>
+                        <td><input type="text" name="productScale" value="<?php echo $row['productScale']; ?>"></td>
+                    </tr>
+                    <tr>
+                        <td>Tillverkare</td>
+                        <td><input type="text" name="productVendor" value="<?php echo $row['productVendor']; ?>"></td>
+                    </tr>
+                    <tr>
+                        <td>Beskrivning</td>
+                        <td><input type="text" name="productDescription" value="<?php echo $row['productDescription']; ?>"></td>
+                    </tr>
+                    <tr>
+                        <td>Lagerstatus</td>
+                        <td><input type="text" name="quantityInStock" value="<?php echo $row['quantityInStock']; ?>"></td>
+                    </tr>
+                    <tr>
+                        <td>Inköpspris</td>
+                        <td><input type="text" name="buyPrice" value="<?php echo $row['buyPrice']; ?>"></td>
+                    </tr>
+                    <tr>
+                        <td>Rekomenderat försäljningspris</td>
+                        <td><input type="text" name="MSRP" value="<?php echo $row['MSRP']; ?>"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <input type="submit" name="productSave" value="Spara"></td>
+                    </tr>
+                </tbody>
+        </table>
+        </form>
+    </main> 
+</body>
+</html>
