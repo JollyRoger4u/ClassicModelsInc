@@ -16,7 +16,11 @@
     //check if the object has been saved
 
     if(isset($_POST['productSave'])) {
-        $productID = filter_input(INPUT_POST, 'productID', FILTER_SANITIZE_MAGIC_QUOTES);
+        $pdo = connect_admin();
+        $get = max_productCode($pdo);
+        $productID = ($get->fetch()) + 1; 
+
+        //$productID = filter_input(INPUT_POST, 'productID', FILTER_SANITIZE_MAGIC_QUOTES);
         $productName = filter_input(INPUT_POST, 'productName', FILTER_SANITIZE_MAGIC_QUOTES);
         $productLine = filter_input(INPUT_POST, 'productLine', FILTER_SANITIZE_SPECIAL_CHARS);
         $productScale = filter_input(INPUT_POST, 'productScale', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -64,11 +68,11 @@
         <form action="newProduct.php" method="post">
             <table>
                 <tbody>
-                    <tr>
+                   <!--  <tr>
                         <td>Produktnummer</td>
                         <td>
                             <input type="text" name="productCode"></td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td>Produktnamn</td>
                         <td><input type="text" name="productName"></td>

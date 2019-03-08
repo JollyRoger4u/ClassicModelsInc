@@ -143,7 +143,9 @@
                                 $result = $orderObject->get_order_by_customerNumber();
                             } else {
                                 $err_message = "Can only search on orderNumber or customerNumber";
-                                $result = get_all_orders($pdo);
+                            $offset = ($pageThroughPageOrders - 1) * 10;
+                            
+                            $result = get_all_orders($pdo, $limit, $offset);
                             }
                             $_POST['search'] = NULL;
                         } else {
@@ -238,7 +240,9 @@
                                         $result = $productObject->get_product();
                                     } else {
                                         $err_message = "Can only search on productCode";
-                                        $result = get_all_products($pdo);
+                                    $offset = ($pageThroughPageProducts - 1) * 10;
+                                    
+                                    $result = get_all_products($pdo, $limit, $offset);
                                     }
                                 } else {
                                     $offset = ($pageThroughPageProducts - 1) * 10;
@@ -659,7 +663,7 @@
 
             <div id="overlay_center">
                 <div class="overlay">
-                    <form action="Admin.php?page=profile" method="post">
+                    <form action="Admin.php" method="post">
                         <table>
                             <tr>
                                 <td colspan="2">

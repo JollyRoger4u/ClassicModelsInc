@@ -18,6 +18,7 @@
     //check for if the productline is saved
 
     if(isset($_POST['productLineSave'])) {
+
         $productLine = filter_input(INPUT_POST, 'productline', FILTER_SANITIZE_MAGIC_QUOTES);
         $textDescription = filter_input(INPUT_POST, 'textDescription', FILTER_SANITIZE_MAGIC_QUOTES);
         $htmlDescription = filter_input(INPUT_POST, 'htmlDescription', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -33,7 +34,7 @@
             $result1 = $productObject->create_productline();
         }
 
-        if(isset($_FILES["fileToUpload"])) {
+        if(isset($_FILES["fileToUpload"])&&$result1) {
 
             if(is_uploaded_file($_FILES["fileToUpload"]["tmp_name"]) ) {
                 $target_file = basename($_FILES["fileToUpload"]["name"]);
@@ -71,7 +72,7 @@
                 }
             }
         }
-        if($result2 && $result1) {
+        if($result2 || $result1) {
             echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=productlines\'">';
         }
     }

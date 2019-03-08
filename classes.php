@@ -24,8 +24,8 @@ class Administrator {
     public function create_admin() {
         $pdo = connect_admin();
 
-        $sql = "INSERT INTO admins (adminLastName, adminFirstName, adminPassword)
-                VALUES '" . $this->{"adminLastName"} . "', '" . $this->{"adminFirstName"} . "', " . $this->{"adminPassword"} . "'"; // sql statement
+        $sql = "INSERT INTO admins (adminID, adminLastName, adminFirstName, adminPassword)
+                VALUES '" . $this->{"adminID"} . "', '" . $this->{"adminLastName"} . "', '" . $this->{"adminFirstName"} . "', " . $this->{"adminPassword"} . "'"; // sql statement
 
         $toCreate = $pdo->prepare($sql); // prepared statement
         $toCreate->execute(); // execute sql statment

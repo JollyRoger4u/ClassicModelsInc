@@ -17,7 +17,10 @@
     // check if the admin has been saved
 
     if(isset($_POST['saveAdmin'])){
-        $adminID = filter_input(INPUT_POST, 'adminID', FILTER_SANITIZE_MAGIC_QUOTES);
+        $pdo = connect_admin();
+        $get = max_admin_id($pdo);
+        $adminID = ($get->fetch()) + 1; 
+
         $adminLastName = filter_input(INPUT_POST, 'adminLastName', FILTER_SANITIZE_MAGIC_QUOTES);
         $adminFirstName = filter_input(INPUT_POST, 'adminFirstName', FILTER_SANITIZE_MAGIC_QUOTES);
 
