@@ -14,6 +14,9 @@
     $productLineObject = new ProductLine;
     $result1 = FALSE;
     $result2 = FALSE;
+    $result3 = FALSE;
+    $err_message = "";
+    $err_message2 = "";
 
     //check for if the productline is saved
 
@@ -26,12 +29,13 @@
         $productLineObject->productLine = $productLine;
         $productLineObject->textDescription = $textDescription;
         $productLineObject->htmlDescription = $htmlDescription;
-        $testResult =  $productObject->get_productline();
-
-        if($test = $testResult->fetch();){
+        $testReturn =  $productLineObject->get_productline();
+        $testResult = $testReturn->fetch();
+        if($productLine == $testResult['productLine']){
             $err_message = "There is already an category with this name";
+            $result3 = TRUE;
         } else {
-            $result1 = $productObject->create_productline();
+            $result1 = $productLineObject->create_productline();
         }
 
         if(isset($_FILES["fileToUpload"])&&$result1) {
@@ -50,7 +54,7 @@
                     if($check !== false) {
                         $uploadOk = 1;
                     } else {
-                        echo "File is not an image.";
+                        $err_message = "File is not an image.";
                         $uploadOk = 0;
                     }
                 }
@@ -60,7 +64,7 @@
                 if($imageFileType != "jpg" && $imageFileType != "png" &&
                 $imageFileType != "jpeg"
                 && $imageFileType != "gif" ) {
-                    echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+                    $err_message = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
                     $uploadOk = 0;
                 } 
 
@@ -74,6 +78,10 @@
         }
         if($result2 || $result1) {
             echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=productlines\'">';
+        } elseif($result3){
+                
+        } elseif (!$result1) {
+            $err_message2 = "Something is wrong in the save function. Contact support.";
         }
     }
 
@@ -116,6 +124,14 @@
                         </td>
                         <td>
                             <input type="submit" name="productLineSave" value="Spara">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <?php echo $err_message; ?>
+                        </td>
+                        <td>
+                            <?php echo $err_message2; ?>
                         </td>
                     </tr>
                 </tbody>

@@ -40,8 +40,12 @@ nav ul li a:visited, nav ul li a:active{
 .pageThrough {
     display: flex;
     width: 100%;
-    align-items: center;
-    justify-content: space-around;
+    justify-content: center;
+}
+
+.pageThrough div{
+    margin-left: 40px;
+    margin-right:40px;
 }
 
 .pageThrough button {
@@ -62,4 +66,26 @@ nav ul li a:visited, nav ul li a:active{
 
 #overlay_center.visible {
     display:block;
+}
+
+.fixedTable {
+    margin-top: 20px;
+    table-layout: fixed;
+    border: 1px solid black;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.fixedTable th {
+    background-color: rgb(192, 192, 192);
+    padding: 5px;
+    border: 1px solid black;
+}
+
+.fixedTable td {
+    border: 1px solid black;
+}
+
+.tdfixed {
+    max-width: 300px;
 }

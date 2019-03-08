@@ -18,9 +18,11 @@
     if(isset($_POST['productSave'])) {
         $pdo = connect_admin();
         $get = max_productCode($pdo);
-        $productID = ($get->fetch()) + 1; 
+        $findcode = $get->fetch(); //get the old code, gets returned as an array with key 'max(productCode)
+        $old_code = explode("_", $findcode['max(productCode)']); //devide the string so we can increase the second part by one
+        $new_code = $old_code[1] + 1;
+        $productID = "$old_code[0]" . "_" . "$new_code"; //splice the old start, the devider and the new code together for a new product code to save in
 
-        //$productID = filter_input(INPUT_POST, 'productID', FILTER_SANITIZE_MAGIC_QUOTES);
         $productName = filter_input(INPUT_POST, 'productName', FILTER_SANITIZE_MAGIC_QUOTES);
         $productLine = filter_input(INPUT_POST, 'productLine', FILTER_SANITIZE_SPECIAL_CHARS);
         $productScale = filter_input(INPUT_POST, 'productScale', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -46,8 +48,12 @@
         if($test = $testResult->fetch()){
             $err_message = "There is already an object with this productCode";
         } else {
-        $productObject->create_product();
-        echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=products\'">';
+            $test = $productObject->create_product();
+            if($test) {
+                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=products\'">';
+            } else {
+                $err_message = "Something is wrong in the save function, contact support.";
+            }
         }
     }
 

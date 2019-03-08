@@ -159,7 +159,7 @@
                 </form>
             </div>
 
-            <table>
+            <table class="fixedTable">
                 <thead>
                     <tr>
                         <th>Ordernummer</th>
@@ -187,7 +187,7 @@
                         </td>
                         <td><?php echo $row['status']; ?>
                         </td>
-                        <td><?php echo $row['comments']; ?>
+                        <td class="tdfixed"><?php echo $row['comments']; ?>
                         </td>
                         <td><?php echo $row['customerNumber']; ?>
                         </td>
@@ -261,7 +261,7 @@
                         </form>
                     </div>
 
-                    <table>
+                    <table class="fixedTable">
                         <thead>
                             <tr>
                                 <th>Produktnummer</th>
@@ -284,7 +284,7 @@
                                 <td>
                                     <?php echo $row['productCode']; ?>
                                 </td>
-                                <td>
+                                <td class="fixedTd">
                                     <?php echo $row['productName']; ?>
                                 </td>
                                 <td>
@@ -361,13 +361,13 @@
                         <input type="text" name="productlineSearch"><button name="page" value="productlines" type="submit">Sök</button>
                     </form>
                     <div>
-                        <form action="newAdmin.php" method="post">
+                        <form action="newProductline.php" method="post">
                             <input type="hidden" name="new" value="productline">
                             <button type="submit">Ny Kategori</button>
                         </form>
                     </div>
                     <div>
-                    <table>
+                    <table class="fixedTable">
                         <thead>
                             <tr>
                                 <th>Kategori</th>
@@ -438,7 +438,7 @@
                         </form>
                     </div>
 
-                    <table>
+                    <table class="fixedTable">
                         <thead>
                             <tr>
                                 <th>Kundnummer</th>
@@ -543,7 +543,7 @@
                         </form>
                     </div>
 
-                    <table >
+                    <table class="fixedTable">
                         <thead>
                             <tr>
                                 <th>Administratörens arbetstagarnummer</th>
@@ -619,7 +619,7 @@
                             $result = $adminObject->get_admin();
                             $row = $result->fetch();
                     ?>
-                    <table>
+                    <table class="fixedTable">
                         <tbody>
                             <tr>
                                 <td>ID</td>

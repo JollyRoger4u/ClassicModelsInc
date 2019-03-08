@@ -29,8 +29,11 @@
         $adminObject->adminFirstName = $adminFirstName;
         
         $return = $adminObject->create_admin();
+        
         if($return){
-        echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=administrators\'">';
+            echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=administrators\'">';
+        } else {
+            $err_message = "Something is wrong in the save function. Contact support.";
         }
     }
 
