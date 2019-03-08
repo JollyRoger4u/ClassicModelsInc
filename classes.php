@@ -24,13 +24,13 @@ class Administrator {
     public function create_admin() {
         $pdo = connect_admin();
 
-        $sql = "INSERT INTO admins (adminLastName, adminFirstName, adminPassword)
-                VALUES '" . $this->{"adminLastName"} . "', '" . $this->{"adminFirstName"} . "', " . $this->{"adminPassword"} . "'"; // sql statement
+        $sql = "INSERT INTO admins (adminID, adminLastName, adminFirstName, adminPassword)
+                VALUES ('" . $this->{"adminID"} . "', '" . $this->{"adminLastName"} . "', '" . $this->{"adminFirstName"} . "', " . $this->{"adminPassword"} . "')"; // sql statement
 
         $toCreate = $pdo->prepare($sql); // prepared statement
-        $toCreate->execute(); // execute sql statment
+        $return = $toCreate->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
     
     public function update_admin() {
@@ -41,9 +41,9 @@ class Administrator {
                 WHERE adminID = '" . $this->{"adminID"} . "'"; // sql statementS
 
         $toSave = $pdo->prepare($sql); // prepared statement
-        $toSave->execute(); // execute sql statment
+        $return = $toSave->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
     
     public function delete_admin() {
@@ -53,9 +53,9 @@ class Administrator {
                 WHERE adminID = '" . $this->{"adminID"} . "'"; // sql statementS
 
         $toDelete = $pdo->prepare($sql); // prepared statement
-        $toDelete->execute(); // execute sql statment
+        $return = $toDelete->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
 }
 
@@ -84,12 +84,12 @@ class Product {
         $pdo = connect_admin();
 
         $sql = "INSERT INTO products (productCode, productName, productLine, productScale, productVendor, productDescription, quantityInStock, buyPrice, MSRP)
-                VALUES '" . $this->{"productCode"} . "', '" . $this->{"productName"} . "', '" . $this->{"productLine"} . "', '" . $this->{"productScale"} . "', '" . $this->{"productVendor"} . "', '" . $this->{"productDescription"} . "', '" . $this->{"quantityInStock"} . "', '" . $this->{"buyPrice"} . "', '" . $this->{"MSRP"} . "'"; // sql statement
+                VALUES ('" . $this->{"productCode"} . "', '" . $this->{"productName"} . "', '" . $this->{"productLine"} . "', '" . $this->{"productScale"} . "', '" . $this->{"productVendor"} . "', '" . $this->{"productDescription"} . "', '" . $this->{"quantityInStock"} . "', '" . $this->{"buyPrice"} . "', '" . $this->{"MSRP"} . "')"; // sql statement
 
         $toCreate = $pdo->prepare($sql); // prepared statement
-        $toCreate->execute(); // execute sql statment
+        $return = $toCreate->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
     
     public function update_product() {
@@ -100,9 +100,9 @@ class Product {
                 WHERE productCode = '" . $this->{"productCode"} . "'"; // sql statementS
 
         $toSave = $pdo->prepare($sql); // prepared statement
-        $toSave->execute(); // execute sql statment
+        $return = $toSave->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
     
     public function delete_admin() {
@@ -112,9 +112,9 @@ class Product {
                 WHERE productCode = '" . $this->{"productCode"} . "'"; // sql statementS
 
         $toDelete = $pdo->prepare($sql); // prepared statement
-        $toDelete->execute(); // execute sql statment
+        $return = $toDelete->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
 }
 
@@ -143,12 +143,12 @@ class ProductLine {
         $pdo = connect_admin();
 
         $sql = "INSERT INTO productLines (productLine, textDescription, htmlDescription, image)
-                VALUES '" . $this->{"productLine"} . "', '" . $this->{"textDescription"} . "', '" . $this->{"htmlDescription"} . "', NULL"; // sql statements
+                VALUES ('" . $this->{"productLine"} . "', '" . $this->{"textDescription"} . "', '" . $this->{"htmlDescription"} . "', NULL)"; // sql statements
 
         $toCreate = $pdo->prepare($sql); // prepared statement
-        $toCreate->execute(); // execute sql statment
+        $return = $toCreate->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
     
     public function update_productline() {
@@ -159,9 +159,9 @@ class ProductLine {
                 WHERE productLine = '" . $this->{"productLine"} . "'"; // sql statementS
 
         $toSave = $pdo->prepare($sql); // prepared statement
-        $toSave->execute(); // execute sql statment
+        $return = $toSave->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
 
     public function upload_picture(){
@@ -171,9 +171,9 @@ class ProductLine {
                 WHERE productLine = '" . $this->{"productLine"} . "'"; // sql statementS
 
         $toSave = $pdo->prepare($sql); // prepared statement
-        $toSave->execute(); // execute sql statment
+        $return = $toSave->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
     
     public function delete_productline() {
@@ -183,9 +183,9 @@ class ProductLine {
                 WHERE productLine = '" . $this->{"productLine"} . "'"; // sql statementS
 
         $toDelete = $pdo->prepare($sql); // prepared statement
-        $toDelete->execute(); // execute sql statment
+        $return = $toDelete->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
 }
 
@@ -214,7 +214,7 @@ class Customer {
         $pdo = connect_admin();
 
         $sql = "INSERT INTO customers (customerNumber, customerName, contactLastName, contactFirstName, phone, addressLine1, addressLine2, city, state, postalCode, salesRepEmployeeNumber, creditLimit)
-                VALUES '" . $this->{"customerNumber"} . "', '" . $this->{"customerName"} . "', '" . $this->{"contactLastName"} . "', '" . $this->{"contactFirstName"} . "', '" . $this->{"phone"} . "', '" . $this->{"addressLine1"} . "', '" . $this->{"addressLine2"} . "', '" . $this->{"city"} . "', '" . $this->{"state"} . "', '" . $this->{"postalCode"} . "', '" . $this->{"salesRepEmployeeNumber"} . "', '" . $this->{"creditLimit"} . "'"; // sql statements
+                VALUES ('" . $this->{"customerNumber"} . "', '" . $this->{"customerName"} . "', '" . $this->{"contactLastName"} . "', '" . $this->{"contactFirstName"} . "', '" . $this->{"phone"} . "', '" . $this->{"addressLine1"} . "', '" . $this->{"addressLine2"} . "', '" . $this->{"city"} . "', '" . $this->{"state"} . "', '" . $this->{"postalCode"} . "', '" . $this->{"salesRepEmployeeNumber"} . "', '" . $this->{"creditLimit"} . "')"; // sql statements
 
         $toCreate = $pdo->prepare($sql); // prepared statement
         $toCreate->execute(); // execute sql statment
@@ -223,9 +223,9 @@ class Customer {
                 VALUES '" . $this->{"customerNumber"} . "', '" . $this->{"password"} . "'"; // sql statementS
 
         $toCreate = $pdo->prepare($sql); // prepared statement
-        $toCreate->execute(); // execute sql statment
+        $return = $toCreate->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
     
     public function update_customer() {
@@ -236,9 +236,9 @@ class Customer {
                 WHERE customerNumber = '" . $this->{"customerNumber"} . "'"; // sql statement
 
         $toSave = $pdo->prepare($sql); // prepared statement
-        $toSave->execute(); // execute sql statment
+        $return = $toSave->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
 
     public function delete_customer() {
@@ -251,9 +251,9 @@ class Customer {
                 WHERE customerNumber = '" . $this->{"customerNumber"} . "'"; // sql statementS
 
         $toSave = $pdo->prepare($sql); // prepared statement
-        $toSave->execute(); // execute sql statment
+        $return = $toSave->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
 
     public function change_password() {
@@ -265,9 +265,9 @@ class Customer {
                 WHERE customerNumber = '" . $this->{"customerNumber"} . "'"; // sql statementS
 
         $toSave = $pdo->prepare($sql); // prepared statement
-        $toSave->execute(); // execute sql statment
+        $return = $toSave->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
 
     public function get_password() {
@@ -322,12 +322,12 @@ class Order {
         $pdo = connect_admin();
 
         $sql = "INSERT INTO orders (orderNumber, orderDate, requiredDate, shippedDate, status, comments, customerNumber)
-                VALUES '" . $this->{"orderNumber"} . "', '" . $this->{"orderDate"} . "', '" . $this->{"requiredDate"} . "', '" . $this->{"shippedDate"} . "', '" . $this->{"status"} . "', '" . $this->{"comments"} . "', '" . $this->{"customerNumber"} . "'"; // sql statements
+                VALUES '(" . $this->{"orderNumber"} . "', '" . $this->{"orderDate"} . "', '" . $this->{"requiredDate"} . "', '" . $this->{"shippedDate"} . "', '" . $this->{"status"} . "', '" . $this->{"comments"} . "', '" . $this->{"customerNumber"} . "')"; // sql statements
 
         $toCreate = $pdo->prepare($sql); // prepared statement
-        $toCreate->execute(); // execute sql statment
+        $return = $toCreate->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
     
     public function update_order() {
@@ -338,9 +338,9 @@ class Order {
                 WHERE orderNumber = '" . $this->{"orderNumber"} . "'"; // sql statementS
 
         $toSave = $pdo->prepare($sql); // prepared statement
-        $toSave->execute(); // execute sql statment
+        $return = $toSave->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
 
     public function get_details() {
@@ -380,12 +380,12 @@ class OrderDetail {
         $pdo = connect_admin();
 
         $sql = "INSERT INTO orderdetails (orderNumber, productCode, quantityOrdered, priceEach, orderLineNumber)
-                VALUES '" . $this->{"orderNumber"} . "', '" . $this->{"productCode"} . "', '" . $this->{"quantityOrdered"} . "', '" . $this->{"priceEach"} . "', '" . $this->{"orderLineNumber"} . "'"; // sql statements
+                VALUES ('" . $this->{"orderNumber"} . "', '" . $this->{"productCode"} . "', '" . $this->{"quantityOrdered"} . "', '" . $this->{"priceEach"} . "', '" . $this->{"orderLineNumber"} . "')"; // sql statements
 
         $toCreate = $pdo->prepare($sql); // prepared statement
-        $toCreate->execute(); // execute sql statment
+        $return = $toCreate->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
     
     public function update_orderdetail() {
@@ -396,9 +396,9 @@ class OrderDetail {
                 WHERE orderNumber = '" . $this->{"orderNumber"} . "'"; // sql statementS
 
         $toSave = $pdo->prepare($sql); // prepared statement
-        $toSave->execute(); // execute sql statment
+        $return = $toSave->execute(); // execute sql statment
 
-        return TRUE;
+        return $return;
     }
 
 }

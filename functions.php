@@ -30,11 +30,43 @@ function productline_names($pdo) {
 
 }
 
+function max_admin_id($pdo) {
+
+     $sql = "SELECT max(adminID) FROM admins";
+
+     $toGet = $pdo->prepare($sql); // prepared statement
+     $toGet->execute(); // execute sql statment
+
+     return $toGet;
+
+}
+
+function max_customer_id($pdo) {
+
+     $sql = "SELECT max(customerNumber) FROM customers";
+
+     $toGet = $pdo->prepare($sql); // prepared statement
+     $toGet->execute(); // execute sql statment
+
+     return $toGet;
+
+}
+
+function max_productCode($pdo) {
+
+     $sql = "SELECT max(productCode) FROM products";
+
+     $toGet = $pdo->prepare($sql); // prepared statement
+     $toGet->execute(); // execute sql statment
+
+     return $toGet;
+
+}
 
 function get_all_productlines($pdo, $limit, $offset) {
      $sql = "";
      if($offset>0){
-          $sql = "SELECT * FROM productlines LIMIT $limit, $offset" ;
+          $sql = "SELECT * FROM productlines LIMIT $offset, $limit" ;
      } else {
           $sql = "SELECT * FROM productlines LIMIT $limit" ;
      }
@@ -48,8 +80,7 @@ function get_all_productlines($pdo, $limit, $offset) {
 function get_all_products($pdo, $limit, $offset) {
      $sql = "";
      if($offset>0){
-     $sql = "SELECT * FROM products LIMIT $limit, $offset";
-     
+     $sql = "SELECT * FROM products LIMIT $offset, $limit";
      } else {
           $sql = "SELECT * FROM products LIMIT $limit";
      }
@@ -63,7 +94,7 @@ function get_all_products($pdo, $limit, $offset) {
 function get_all_orders($pdo, $limit, $offset) {
      $sql = "";
      if($offset>0){
-     $sql = "SELECT * FROM orders LIMIT $limit, $offset";
+     $sql = "SELECT * FROM orders LIMIT $offset, $limit";
      } else {
      $sql = "SELECT * FROM orders LIMIT $limit";
      }
@@ -77,7 +108,7 @@ function get_all_orders($pdo, $limit, $offset) {
 function get_all_customers($pdo, $limit, $offset) {
      $sql = "";
      if($offset>0){
-     $sql = "SELECT * FROM customers LIMIT $limit, $offset";
+     $sql = "SELECT * FROM customers LIMIT $offset, $limit";
      } else {
      $sql = "SELECT * FROM customers LIMIT $limit";
      }
@@ -91,9 +122,9 @@ function get_all_customers($pdo, $limit, $offset) {
 function get_all_admins($pdo, $limit, $offset) {
      $sql = "";
      if($offset>0){
-     $sql = "SELECT * FROM admins";
-
+     $sql = "SELECT * FROM admins LIMIT $offset, $limit";
      } else {
+     $sql = "SELECT * FROM customers LIMIT $limit";
      }
      $toGet = $pdo->prepare($sql); // prepared statement
      $toGet->execute(); // execute sql statment

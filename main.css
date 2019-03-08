@@ -1,0 +1,150 @@
+.hidden {
+    display:none;
+}
+
+header, main {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+}
+
+nav ul li {
+    font-size: 2em;
+    background-color: rgb(209, 209, 209);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+nav ul li a {
+    color: black;
+    text-decoration: none;
+}
+
+nav ul li a:hover {
+    color: rgb(73, 73, 73);
+}
+
+nav ul li a:visited, nav ul li a:active{
+    color: black;   
+}
+
+.pageThrough {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.pageThrough div{
+    margin-left: 40px;
+    margin-right:40px;
+}
+
+.pageThrough button {
+    background: none;
+    border: none;
+    font-size: 2em;
+}
+
+.tables {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#overlay_center {
+    display: none;
+}
+
+#overlay_center.visible {
+    display:block;
+}
+
+.fixedTable {
+    margin-top: 20px;
+    table-layout: fixed;
+    border: 1px solid black;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.fixedTable th {
+    background-color: rgb(192, 192, 192);
+    padding: 5px;
+    border: 1px solid black;
+}
+
+.fixedTable td {
+    border: 1px solid black;
+}
+
+.tdfixed {
+    max-width: 300px;
+}
+
+.centering {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkoutTable {
+    width: 75%;
+}
+
+.checkoutDetails {
+    table-layout: fixed;
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.checkoutDetails th {
+    border: 1px solid black;
+}
+
+.checkoutDetails td {
+    border: 1px solid black;
+}
+
+.deliveryChoice ul {
+    list-style: none;
+}
+
+.detailPic{
+    width: 50px;
+    max-width: 50px;
+}
+
+.detailDesciption {
+
+}
+
+.detailPrice {
+    width: 25px;
+}
+
+.detailAmount {
+    width: 25px;
+}
+
+#amount1 {
+    width: 20px;
+}
+
+.detailTotal {
+    width: 25px;
+}
+
+.detailDelete {
+    width: 10px;
+}
