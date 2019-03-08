@@ -75,34 +75,7 @@
     <script src="main.js"></script>
 </head>
 <body>
-    <header>
-        <a href="admin.php"><img src="/uploads/productImg/Centennial-Light.jpg"></a>
-    </header>
-    <nav>
-        <ul>
-            <li>
-                <a href="admin.php?page=orders">Ordrar</a>
-            </li>
-            <li>
-                <a href="admin.php?page=products">Produkter</a>
-            </li>
-            <li>
-                <a href="admin.php?page=productlines">Kategorier</a>
-            </li>
-            <li>
-                <a href="admin.php?page=customers">Kunder</a>
-            </li>
-            <li>
-                <a href="admin.php?page=administrators">Administratörer</a>
-            </li>
-            <li>
-                <a href="admin.php?page=profile">Min Profil</a>
-            </li>
-        </ul>
-    </nav>   
-    <?php
-    include_once "functions.php";
-    ?>
+<?php include_once 'headnav.php'; ?>
     
     <main>
         <!-- List the different info -->
@@ -114,30 +87,31 @@
         $productLineObject->productLine = $productLine;
 
         $result = $productLineObject->get_productline();
+        $row = $result->fetch();
         ?>
         <form action="alterProductline.php" method="post">
             <table>
                 <tbody>
                     <tr>
                         <td>Kategori</td>
-                        <td><input type="hidden" name="productline" value="<?php echo $result['productLine']; ?>">
-                            <input type="text" value="<?php echo $result['productLine']; ?>" disabled></td>
+                        <td><input type="hidden" name="productline" value="<?php echo $row['productLine']; ?>">
+                            <input type="text" value="<?php echo $row['productLine']; ?>" disabled></td>
                     </tr>
                     <tr>
                         <td>Text beskrivning</td>
-                        <td><input type="text" name="textDescription" value="<?php echo $result['textDescription']; ?>"></td>
+                        <td><input type="text" name="textDescription" value="<?php echo $row['textDescription']; ?>"></td>
                     </tr>
                     <tr>
                         <td>HTML beskrivning</td>
-                        <td><input type="text" name="htmlDescription" value="<?php echo $result['htmlDescription']; ?>"><td>
+                        <td><input type="text" name="htmlDescription" value="<?php echo $row['htmlDescription']; ?>"><td>
                     </tr>
                     <tr>
                         <td>Image</td>
                         <td><img src="<?php 
                         
-                        if($result['image']!=NULL) {
+                        if($row['image']!=NULL) {
 
-                        echo $result['image'];
+                        echo $row['image'];
                         
                         } else {
                             echo "#";

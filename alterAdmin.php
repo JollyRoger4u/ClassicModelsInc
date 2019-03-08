@@ -70,44 +70,37 @@
     <script src="main.js"></script>
 </head>
 <body>
-    <header>
-        <a href="admin.php"><img src="/uploads/productImg/Centennial-Light.jpg"></a>
-    </header>
-    <nav>
-        <ul>
-            <li>
-                <a href="admin.php?page=orders">Ordrar</a>
-            </li>
-            <li>
-                <a href="admin.php?page=products">Produkter</a>
-            </li>
-            <li>
-                <a href="admin.php?page=productlines">Kategorier</a>
-            </li>
-            <li>
-                <a href="admin.php?page=customers">Kunder</a>
-            </li>
-            <li>
-                <a href="admin.php?page=administrators">Administratörer</a>
-            </li>
-            <li>
-                <a href="admin.php?page=profile">Min Profil</a>
-            </li>
-        </ul>
-    </nav>   
+<?php include_once 'headnav.php'; ?>
     <main>
         <!-- List the different info -->
         <?php
         //fetch the admin to alter from post
-
+        // check if it is from the list
+        if(isset($_POST['number'])) {
         $adminID = filter_input(INPUT_POST, 'number', FILTER_SANITIZE_NUMBER_INT);
 
         $adminObject->adminID = $adminID;
         $result = $adminObject->get_admin();
         $row = $result->fetch();
+        } else {
+            $row = array("adminID" => $_POST['adminID'],
+                    "adminLastName" => $_POST['adminLastName'],
+                    "adminFirstName" => $_POST['adminFirstName'],
+                    "contactFirstName" => $_POST['contactFirstName'],
+                    "phone" => $_POST['phone'],
+                    "addressLine1" => $_POST['addressLine1'],
+                    "addressLine2" => $_POST['addressLine2'],
+                    "city" => $_POST['city'],
+                    "state" => $_POST['state'],
+                    "postalCode" => $_POST['postalCode'],
+                    "country" => $_POST['country'],
+                    "salesRepEmployeeNumber" => $_POST['salesRepEmployeeNumber'],
+                    "creditLimit" => $_POST['creditLimit']
+            );
+        }
         ?>
-        <form action="alterAdmin.php" method="post">
             <table>
+        <form action="alterAdmin.php" method="post">
                 <tr>
                     <td>Admin ID
                     </td>
@@ -132,31 +125,34 @@
                     <td>Lösenord
                     </td>
                     <td>
-                        <?php 
+                        <input type="hidden" name="password" value="<?php
                             $length = strlen($row['password']);
-                            for($i=0;$i<$length;$i++)
-                                echo "*";
-                            }
+                            echo  str_repeat("*", $length); ?>">
+                        <?php
+                            $length = strlen($row['password']);
+                            echo  str_repeat("*", $length);
                         ?>
                     </td>
                 </tr>
+        </form>
                 <tr>
                     <td>
                         <button id="changePasswordButton">Ändra lösenord</button>
                     </td>
+                <form action="alterAdmin.php" method="post">
                     <td>
                         <input type="submit" name="saveAdmin" value="Spara">
                     </td>
+                </form>
                 </tr>
             </table>
-        </form>
 
         <!-- put an overlay here for the password -->
         
-        <div class="overlay_center">
+        <div id="overlay_center">
             <div class="overlay">
-                <form action="alterAdmin.php" method="post">
                     <table>
+                <form action="alterAdmin.php" method="post">
                         <tr>
                             <td colspan="2">
                                 <?php
@@ -190,16 +186,18 @@
                             <td><input type="text" name="repeatNewPassword">
                             </td>
                         </tr>
+                </form>
                         <tr>
                             <td>
-                                <button id="changePasswordButton">Ångra</button>
+                                <button id="cancelPasswordButton">Ångra</button>
                             </td>
+                <form action="alterAdmin.php" method="post">
                             <td>
-                                <input type="submit" name="savePassword" value="Spara Lösenord">
+                                <input type="submit" id="savePasswordButton" name="savePassword" value="Spara Lösenord">
                             </td>
+                </form>
                         </tr>
                     </table>
-                </form>
             </div>    
         </div>
     </main>

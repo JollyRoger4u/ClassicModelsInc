@@ -61,152 +61,172 @@
     <script src="main.js"></script>
 </head>
 <body>
-    <header>
-        <a href="admin.php"><img src="/uploads/productImg/Centennial-Light.jpg"></a>
-    </header>
-    <nav>
-        <ul>
-            <li>
-                <a href="admin.php?page=orders">Ordrar</a>
-            </li>
-            <li>
-                <a href="admin.php?page=products">Produkter</a>
-            </li>
-            <li>
-                <a href="admin.php?page=productlines">Kategorier</a>
-            </li>
-            <li>
-                <a href="admin.php?page=customers">Kunder</a>
-            </li>
-            <li>
-                <a href="admin.php?page=administrators">Administratörer</a>
-            </li>
-            <li>
-                <a href="admin.php?page=profile">Min Profil</a>
-            </li>
-        </ul>
-    </nav>   
+<?php include_once 'headnav.php'; ?>   
     
-    <main>
+    <main class="customer">
         <!-- List the different info -->
         <?php
         //fetch the admin to alter from post
 
+        //check if it is from customers list
+        if(isset($_POST['number'])) {
         $customerID = filter_input(INPUT_POST, 'number', FILTER_SANITIZE_NUMBER_INT);
 
         $customerObject->customerNumber=$customerID;
         $result = $customerObject->get_customer();
         $row = $result->fetch();
+        } else {
+            $row = array("customerNumber" => $_POST['customerNumber'],
+                    "customerName" => $_POST['customerName'],
+                    "contactLastName" => $_POST['contactLastName'],
+                    "contactFirstName" => $_POST['contactFirstName'],
+                    "phone" => $_POST['phone'],
+                    "addressLine1" => $_POST['addressLine1'],
+                    "addressLine2" => $_POST['addressLine2'],
+                    "city" => $_POST['city'],
+                    "state" => $_POST['state'],
+                    "postalCode" => $_POST['postalCode'],
+                    "country" => $_POST['country'],
+                    "salesRepEmployeeNumber" => $_POST['salesRepEmployeeNumber'],
+                    "creditLimit" => $_POST['creditLimit']
+            );
+        }
         ?>
-            
             <table>
+            <form method="post" action="deleteCustomer.php">
                 <tr>
                     <td>Kundnummer
                     </td>
                     <td>
+                        <input type="hidden" name="customerNumber" value="<?php echo $row['customerNumber']; ?>">
                         <?php echo $row['customerNumber']; ?>
                     </td>
                 </tr>
                 <tr>
                     <td>Företagsnamn
                     </td>
-                    <td><?php echo $row['customerName']; ?>
+                    <td>
+                        <input type="hidden" name="customerName" value="<?php echo $row['customerName']; ?>">
+                        <?php echo $row['customerName']; ?>
                     </td>
                 </tr>
                 <tr>
                     <td>Efternamn på företagskontakt
                     </td>
-                    <td><?php echo $row['contactLastName']; ?>
+                    <td>
+                        <input type="hidden" name="contactLastName" value="<?php echo $row['contactLastName']; ?>">
+                        <?php echo $row['contactLastName']; ?>
                     </td>
                 </tr>
                 <tr>
                     <td>Förnamn på företagskontakt
                     </td>
-                    <td><?php echo $row['contactFirstName']; ?>
+                    <td>
+                        <input type="hidden" name="contactFirstName" value="<?php echo $row['contactFirstName']; ?>">
+                        <?php echo $row['contactFirstName']; ?>
                     </td>
                 </tr>
                 <tr>
                     <td>Telefonnummer
                     </td>
-                    <td><?php echo $row['phone']; ?>
+                    <td>
+                        <input type="hidden" name="phone" value="<?php echo $row['phone']; ?>">
+                        <?php echo $row['phone']; ?>
                     </td>
                 </tr>
                 <tr>
                     <td>addressrad 1
                     </td>
-                    <td><?php echo $row['addressLine1']; ?>
+                    <td>
+                        <input type="hidden" name="addressLine1" value="<?php echo $row['addressLine1']; ?>">
+                        <?php echo $row['addressLine1']; ?>
                     </td>
                 </tr>
                 <tr>
                     <td>addressrad 2
                     </td>
-                    <td><?php echo $row['addressLine2']; ?>
+                    <td>
+                        <input type="hidden" name="addressLine2" value="<?php echo $row['addressLine2']; ?>">
+                        <?php echo $row['addressLine2']; ?>
                     </td>
                 </tr>
                 <tr>
                     <td>Postort
                     </td>
-                    <td><?php echo $row['city']; ?>
+                    <td>
+                        <input type="hidden" name="city" value="<?php echo $row['city']; ?>">
+                        <?php echo $row['city']; ?>
                     </td>
                 </tr>
                 <tr>
                     <td>Stat
                     </td>
-                    <td><?php echo $row['state']; ?>
+                    <td>
+                        <input type="hidden" name="state" value="<?php echo $row['state']; ?>">
+                        <?php echo $row['state']; ?>
                     </td>
                 </tr>
                 <tr>
                     <td>Postnummer
                     </td>
-                    <td><?php echo $row['postalCode']; ?>
+                    <td>
+                        <input type="hidden" name="postalCode" value="<?php echo $row['postalCode']; ?>">
+                        <?php echo $row['postalCode']; ?>
                     </td>
                 </tr>
                 <tr>
                     <td>Land
                     </td>
-                    <td><?php echo $row['country']; ?>
+                    <td>
+                        <input type="hidden" name="country" value="<?php echo $row['country']; ?>">
+                        <?php echo $row['country']; ?>
                     </td>
                 </tr>
                 <tr>
                     <td>Försäljarensanställningsnummer
                     </td>
-                    <td><?php echo $row['salesRepEmployeeNumber']; ?>
+                    <td>
+                        <input type="hidden" name="salesRepEmployeeNumber" value="<?php echo $row['salesRepEmployeeNumber']; ?>">
+                        <?php echo $row['salesRepEmployeeNumber']; ?>
                     </td>
                 </tr>
                 <tr>
                     <td>Max kredit
                     </td>
-                    <td><?php echo $row['creditLimit']; ?>
+                    <td>
+                        <input type="hidden" name="creditLimit" value="<?php echo $row['creditLimit']; ?>">
+                        <?php echo $row['creditLimit']; ?>
                     </td>
                 </tr>
+                
+            </form>
                 <tr>
                     <td>
                     </td>
                     <td>
-                        <button id="deleteButton">Ta bort Kund</button>
+                        <button id="changePasswordButton" onclick="false">Ta bort Kund</button>
                     </td>
                 </tr>
             </table>
-
         <!-- put an overlay here to make sure that the customer is supposed to be deleted -->
 
-        <div class="overlay_center">
+        <div id="overlay_center">
             <div class="overlay">
-                <form action="deleteCustomer.php" method="post">
                     <h1>Bort tagning av kund
                     </h1>
-                    <p>Denna åtgärd kan inte ångras. Är du säke rpå att du vill fotsätta?
+                    <p>Denna åtgärd kan inte ångras. Är du säker på att du vill fortsätta?
                     </p>
                     <table>
                             <td>
-                                <input type="submit" name="cancel" value="Ångra">
+                                <button id="cancelPasswordButton" onclick="false">Ångra</button>
                             </td>
-                            <td>
-                                <input type="submit" name="deleteCustomer" value="Ta bort">
-                            </td>
+                            <form action="deleteCustomer.php" method="post">
+                                <td>
+                                    <input type="submit" id="savePasswordButton" name="deleteCustomer" value="Ta bort">
+                                </td>
+                            </form>
                         </tr>
                     </table>
-                </form>
             </div>    
         </div>
     </main>

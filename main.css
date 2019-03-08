@@ -1,3 +1,65 @@
 .hidden {
     display:none;
 }
+
+header, main {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+}
+
+nav ul li {
+    font-size: 2em;
+    background-color: rgb(209, 209, 209);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+nav ul li a {
+    color: black;
+    text-decoration: none;
+}
+
+nav ul li a:hover {
+    color: rgb(73, 73, 73);
+}
+
+nav ul li a:visited, nav ul li a:active{
+    color: black;   
+}
+
+.pageThrough {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.pageThrough button {
+    background: none;
+    border: none;
+    font-size: 2em;
+}
+
+.tables {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#overlay_center {
+    display: none;
+}
+
+#overlay_center.visible {
+    display:block;
+}

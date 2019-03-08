@@ -49,31 +49,7 @@
     <script src="main.js"></script>
 </head>
 <body>
-    <header>
-        <a href="admin.php"><img src="/uploads/productImg/Centennial-Light.jpg"></a>
-    </header>
-    <nav>
-        <ul>
-            <li>
-                <a href="admin.php?page=orders">Ordrar</a>
-            </li>
-            <li>
-                <a href="admin.php?page=products">Produkter</a>
-            </li>
-            <li>
-                <a href="admin.php?page=productlines">Kategorier</a>
-            </li>
-            <li>
-                <a href="admin.php?page=customers">Kunder</a>
-            </li>
-            <li>
-                <a href="admin.php?page=administrators">Administratörer</a>
-            </li>
-            <li>
-                <a href="admin.php?page=profile">Min Profil</a>
-            </li>
-        </ul>
-    </nav>   
+<?php include_once 'headnav.php'; ?>
       
     <main>
         <!-- List the different info -->

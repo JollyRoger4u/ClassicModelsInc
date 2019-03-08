@@ -29,7 +29,7 @@
         if($result['password'] == $password){
             //set cookie and redirect
             setcookie("administrator", $adminID]);
-            echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php\'">';
+            echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=start\'">';
         } else {
             $wrongpassword = 1;
         }
