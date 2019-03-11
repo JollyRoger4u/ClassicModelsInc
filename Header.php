@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+        <link rel="stylesheet" type="text/css" href="Nav.css">
+    <header>
+      <div class="navLeft">
+          <a class="active" href="#store">Store</a>        
+      </div>
+        <img src="logo.png">
+        <div class=navRight>
+        <a href="#logIn" class="right">LogIn</a>                          <!--To Be Hidden When Logged In -->
+        <a href="#register" class="right">Register</a>                    <!--To Be Hidden When Logged In -->
+        <a href="#profile" class="right">Profile</a>                      <!--To Be Hidden When NOT Logged In -->
+        <a href="#logOut" class="right">Log Out</a>                       <!--To Be Hidden When NOT Logged In -->
+        <a href="#shoppingCart" class="right">ShoppingCart</a>       
+      </div>
+    </header>
+
+<body>
