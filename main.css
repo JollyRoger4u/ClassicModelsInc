@@ -66,6 +66,21 @@ nav ul li a:visited, nav ul li a:active{
 
 #overlay_center.visible {
     display:block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.589);
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.overlay {
+    background-color: #FFFFFF;
+    padding: 30px;
 }
 
 .fixedTable {

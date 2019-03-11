@@ -11,7 +11,7 @@
     
     // create an admin object and an error message variable just in case
 
-    $adminObject = new Admin;
+    $adminObject = new Administrator;
     $err_message = "";
 
     // check if the admin has been saved
@@ -36,7 +36,7 @@
         $newPassword = filter_input(INPUT_POST, 'newPassword', FILTER_SANITIZE_MAGIC_QUOTES);
         $repeatNewPassword = filter_input(INPUT_POST, 'repeatNewPassword', FILTER_SANITIZE_MAGIC_QUOTES);
         
-        $adminObject->adminID = $adminID);
+        $adminObject->adminID = $adminID;
         //password checks
         $checkPassword = $adminObject->get_password();
 
@@ -158,7 +158,7 @@
                                 <?php
 
                                 if($err_message = ""){
-                                    echo "Ändra lösenord nedan"
+                                    echo "Ändra lösenord nedan";
                                 } else {
                                     echo $err_message;
                                 }

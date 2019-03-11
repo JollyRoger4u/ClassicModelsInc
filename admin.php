@@ -549,7 +549,6 @@
                                 <th>Administratörens arbetstagarnummer</th>
                                 <th>Efternamn</th>
                                 <th>Förnamn</th>
-                                <th>Lösenord</th>
                                 <th>Redigera</th>
                             </tr>
                         </thead>
@@ -567,14 +566,6 @@
                                 </td>
                                 <td>
                                     <?php echo $row['adminFirstName']; ?>
-                                </td>
-                                <td>
-                                    <?php 
-                                        $length = strlen($row['password']);
-                                        for($i=0;$i<$length;$i++) {
-                                            echo "*";
-                                        }
-                                    ?>
                                 </td>
                                 <td>
                                     <form method="POST" action="alterAdmin.php">
