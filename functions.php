@@ -41,6 +41,17 @@ function max_admin_id($pdo) {
 
 }
 
+function min_admin_id($pdo) {
+
+     $sql = "SELECT min(adminID) FROM admins";
+
+     $toGet = $pdo->prepare($sql); // prepared statement
+     $toGet->execute(); // execute sql statment
+
+     return $toGet;
+
+}
+
 function max_customer_id($pdo) {
 
      $sql = "SELECT max(customerNumber) FROM customers";
@@ -55,6 +66,17 @@ function max_customer_id($pdo) {
 function max_productCode($pdo) {
 
      $sql = "SELECT max(productCode) FROM products";
+
+     $toGet = $pdo->prepare($sql); // prepared statement
+     $toGet->execute(); // execute sql statment
+
+     return $toGet;
+
+}
+
+function max_orderNumber($pdo) {
+
+     $sql = "SELECT max(orderNumber) FROM orders";
 
      $toGet = $pdo->prepare($sql); // prepared statement
      $toGet->execute(); // execute sql statment

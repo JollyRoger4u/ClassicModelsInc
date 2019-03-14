@@ -23,12 +23,53 @@
 
         // we dont want to show everything in the database for every search so creating limits and offsets for scrolling through the database
 
-        $limit = 10;
+        $limit = 11;
+        $numberOfItems = 0;
         $pageThroughPageOrders = 1;
         $pageThroughPageProducts = 1;
         $pageThroughPageProductlines = 1;
         $pageThroughPageCustomers = 1;
         $pageThroughPageAdmins = 1;
+
+        //check the maximum length of all search paramaters
+        // orders
+
+
+        $pdo = connect_admin();
+        $orderMaxResult = max_orderNumber($pdo);
+        $orderMaxRow = $orderMaxResult->fetch();
+        $orderMax = $orderMaxRow['max(orderNumber)'];
+        $orderMaxLen = strlen($orderMax);
+
+        //products
+
+        $pdo = connect_admin();
+        $productMaxResult = max_productCode($pdo);
+        $productMaxRow = $productMaxResult->fetch();
+        $productMax = $productMaxRow['max(productCode)'];
+        $productMaxLen = strlen($productMax);
+
+        // customers
+
+        $pdo = connect_admin();
+        $customerMaxResult = max_customer_id($pdo);
+        $cusomterMaxRow = $customerMaxResult->fetch();
+        $customerMax = $cusomterMaxRow['max(customerNumber)'];
+        $customerMaxLen = strlen($customerMax);
+
+        //admins
+
+        $pdo = connect_admin();
+        $adminMaxResult = max_admin_id($pdo);
+        $adminMaxRow = $adminMaxResult->fetch();
+        $adminMax = $adminMaxRow['max(adminID)'];
+        $adminMaxLen = strlen($adminMax);
+
+        $pdo = connect_admin();
+        $adminMinResult = min_admin_id($pdo);
+        $adminMinRow = $adminMinResult->fetch();
+        $adminMin = $adminMinRow['min(adminID)'];
+        $adminMinLen = strlen($adminMin);
 
         if(isset($_POST['nextPageOrders'])) {
                 $pageThroughPageOrders = $_POST['pageThroughPageOrders'] + 1;
@@ -66,8 +107,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
-    <script src="main.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="admin.css">
+    <script src="admin.js"></script>
 </head>
 
 <body>
@@ -133,21 +174,34 @@
                     // print a row for each row in $result if this page
                     if($page=="orders"){
                         $pdo = connect_admin();
-                        if(isset($_POST['search'])){
-                            $orderID = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_NUMBER_INT);
-                            if(strlen($orderID) == 5){
+                        if(isset($_POST['orderSearch'])){
+                            $orderID = filter_input(INPUT_POST, 'orderSearch', FILTER_SANITIZE_NUMBER_INT);
+                            if($_POST['searchType'] == "Ordernummer"){
+                                if(strlen($orderID) > 5 && strlen($orderID) <= $orderMaxLen){
                                 $orderObject->orderNumber = $orderID;
                                 $result = $orderObject->get_order_by_orderNumber();
-                            } elseif (strlen($orderID) == 3){
+                                } else {
+                                    $err_message = "Ordernummret är felaktigt";
+                                    $offset = ($pageThroughPageOrders - 1) * 10;
+                                    
+                                    $result = get_all_orders($pdo, $limit, $offset);
+                                }
+                            } elseif ($_POST['searchType'] == "Kundnummer"){
+                                if(strlen($orderID) > 2 && strlen($orderID) <= $customerMaxLen){
                                 $orderObject->customerNumber = $orderID;
                                 $result = $orderObject->get_order_by_customerNumber();
+                                } else {
+                                    $err_message = "Kundnummer är felaktigt";
+                                    $offset = ($pageThroughPageOrders - 1) * 10;
+                                    
+                                    $result = get_all_orders($pdo, $limit, $offset);
+                                }
                             } else {
-                                $err_message = "Can only search on orderNumber or customerNumber";
-                            $offset = ($pageThroughPageOrders - 1) * 10;
-                            
-                            $result = get_all_orders($pdo, $limit, $offset);
+                                $err_message = "Du kan endast söka på Ordernummer eller Kundnummer";
+                                $offset = ($pageThroughPageOrders - 1) * 10;
+                                
+                                $result = get_all_orders($pdo, $limit, $offset);
                             }
-                            $_POST['search'] = NULL;
                         } else {
                             $offset = ($pageThroughPageOrders - 1) * 10;
                             
@@ -155,7 +209,13 @@
                         }
                 ?>
                 <form action="admin.php?page=orders" method="post">
-                    <input type="text" name="search"><button name="page" value="orders" type="submit">Sök</button><?php echo $err_message; ?>
+                    <select name="searchType">
+                        <option value="Ordernummer">Ordernummer</option>
+                        <option value="Kundnummer">Kundnummer</option>
+                    </select>
+                    <input type="text" name="orderSearch">
+                    <button name="page" value="orders" type="submit">Sök</button>
+                    <?php echo $err_message; ?>
                 </form>
             </div>
 
@@ -174,7 +234,9 @@
                 </thead>
                 <tbody>
                     <?php
+                            $numberOfItems = 0;
                         while ($row = $result->fetch()) {
+                            $numberOfItems++;
                     ?>
                     <tr>
                         <td><?php echo $row['orderNumber']; ?>
@@ -187,7 +249,7 @@
                         </td>
                         <td><?php echo $row['status']; ?>
                         </td>
-                        <td class="tdfixed"><?php echo $row['comments']; ?>
+                        <td class="tdfixed"><div class="dontJump"><?php echo $row['comments']; ?></div>
                         </td>
                         <td><?php echo $row['customerNumber']; ?>
                         </td>
@@ -208,11 +270,11 @@
             <form action="admin.php?page=orders" method="post">
             <div class="pageThrough">
                 <div>
-                    <input type="hidden" name="pageThroughPageOrders" value="<?php echo $pageThroughPageOrders; ?>"><?php if($pageThroughPageOrders>1) { ?>
+                    <input type="hidden" name="pageThroughPageOrders" value="<?php echo $pageThroughPageOrders; ?>"><?php if($pageThroughPageOrders>1 && !isset($_POST['orderSearch'])) { ?>
                     <button name="previousPageOrders" type="submit"><</button><?php } ?>
                 </div>
                 <div>
-                    <button name="nextPageOrders" type="submit">></button>
+                    <?php if($numberOfItems>10 && !isset($_POST['orderSearch'])) { ?><button name="nextPageOrders" type="submit">></button><?php } ?>
                 </div>
             </div>
             </form>
@@ -235,14 +297,21 @@
                                 $pdo = connect_admin();
                                 if(isset($_POST['productSearch'])){
                                     $productCode = filter_input(INPUT_POST, 'productSearch', FILTER_SANITIZE_MAGIC_QUOTES);
-                                    if(strlen($productCode) == 8){
+                                    if($_POST['searchType'] == "Produktnummer") {
+                                        if(strlen($productCode) > 7 && strlen($productCode) <= $productMaxLen) {
                                         $productObject->productCode = $productCode;
                                         $result = $productObject->get_product();
+                                        } else {
+                                            $err_message = "Produktkoden är felaktig";
+                                            $offset = ($pageThroughPageProducts - 1) * 10;
+                                            
+                                            $result = get_all_products($pdo, $limit, $offset);
+                                        }
                                     } else {
-                                        $err_message = "Can only search on productCode";
-                                    $offset = ($pageThroughPageProducts - 1) * 10;
-                                    
-                                    $result = get_all_products($pdo, $limit, $offset);
+                                        $err_message = "Du kan endast söka på produktkod";
+                                        $offset = ($pageThroughPageProducts - 1) * 10;
+                                        
+                                        $result = get_all_products($pdo, $limit, $offset);
                                     }
                                 } else {
                                     $offset = ($pageThroughPageProducts - 1) * 10;
@@ -251,6 +320,9 @@
                                 }
                         ?>
                         <form action="admin.php?page=products" method="post">
+                            <select name="searchType">
+                                <option value="Produktnummer">Produktnummer</option>
+                            </select>
                             <input type="text" name="productSearch"><button name="page" value="products" type="submit">Sök</button>
                         </form>
                     </div>
@@ -278,7 +350,9 @@
                         <tbody>
                             <?php
                                 // print a row of the table for each row in the search if this page
+                                $numberOfItems = 0;
                                 while ($row = $result->fetch()) {
+                                    $numberOfItems++;
                             ?>
                             <tr>
                                 <td>
@@ -322,11 +396,11 @@
                     <form action="admin.php?page=products" method="post">
                     <div class="pageThrough">
                         <div>
-                            <input type="hidden" name="pageThroughPageProducts" value="<?php echo $pageThroughPageProducts; ?>"><?php if($pageThroughPageProducts>1) { ?>
+                            <input type="hidden" name="pageThroughPageProducts" value="<?php echo $pageThroughPageProducts; ?>"><?php if($pageThroughPageProducts>1 && !isset($_POST['productSearch'])) { ?>
                             <button name="previousPageProducts" type="submit"><</button><?php } ?>
                         </div>
                         <div>
-                            <button name="nextPageProducts" type="submit">></button>
+                            <?php if($numberOfItems>10 && !isset($_POST['productSearch'])) { ?><button name="nextPageProducts" type="submit">></button><?php } ?>
                         </div>
                     </div>
                     </form>
@@ -377,7 +451,9 @@
                         <tbody>
                             <?php
                                 // print a row of the table for each row in the search if this page
+                                $numberOfItems = 0;
                                 while ($row = $result->fetch()) {
+                                    $numberOfItems++;
                             ?>
                             <tr>
                                 <td>
@@ -400,11 +476,11 @@
                     <form action="admin.php?page=productlines" method="post">
                     <div class="pageThrough">
                         <div>
-                            <input type="hidden" name="pageThroughPageProductlines" value="<?php echo $pageThroughPageProductlines; ?>"><?php if($pageThroughPageProductlines>1) { ?>
+                            <input type="hidden" name="pageThroughPageProductlines" value="<?php echo $pageThroughPageProductlines; ?>"><?php if($pageThroughPageProductlines>1 && !isset($_POST['productlineSearch'])) { ?>
                             <button name="previousPageProductlines" type="submit"><</button><?php } ?>
                         </div>
                         <div>
-                            <button name="nextPageProductlines" type="submit">></button>
+                            <?php if($numberOfItems>10 && !isset($_POST['productlineSearch'])) { ?><button name="nextPageProductlines" type="submit">></button><?php } ?>
                         </div>
                     </div>
                     </form>
@@ -425,8 +501,22 @@
                                 $pdo = connect_admin();
                                 if(isset($_POST['customerSearch'])){
                                     $customer = filter_input(INPUT_POST, 'customerSearch', FILTER_SANITIZE_NUMBER_INT);
-                                    $customerObject->customerNumber = $customer;
-                                    $result = $customerObject->get_customer($pdo);
+                                    if($_POST['searchType'] == "Kundnummer") {
+                                        if(strlen($customer) > 2 && strlen($customer) <= $customerMaxLen) {
+                                        $customerObject->customerNumber = $customer;
+                                        $result = $customerObject->get_customer($pdo);
+                                        } else {
+                                            $err_message = "Felaktigt Kundnummer";
+                                            $offset = ($pageThroughPageCustomers - 1) * 10;
+                                            
+                                            $result = get_all_customers($pdo, $limit, $offset);
+                                        }
+                                    } else {
+                                        $err_message = "Kan endast söka på kundnummer";
+                                        $offset = ($pageThroughPageCustomers - 1) * 10;
+                                        
+                                        $result = get_all_customers($pdo, $limit, $offset);
+                                    }
                                 } else {
                                     $offset = ($pageThroughPageCustomers - 1) * 10;
                                     
@@ -434,7 +524,11 @@
                                 }
                         ?>
                         <form action="admin.php?page=customers" method="post">
+                            <select name="searchType">
+                                <option value="Kundnummer">Kundnummer</option>
+                            </select>
                             <input type="text" name="customerSearch"><button name="page" value="customers" type="submit">Sök</button>
+                            <?php echo $err_message; ?>
                         </form>
                     </div>
 
@@ -442,7 +536,7 @@
                         <thead>
                             <tr>
                                 <th>Kundnummer</th>
-                                <th>Kundens namn</th>
+                                <th>Företagets namn</th>
                                 <th>Kontaktpersonen</th>
                                 <th>Telefonnummer</th>
                                 <th>Säljare</th>
@@ -454,7 +548,9 @@
                         <tbody>
                             <?php
                                 // print a row of the table for each row in the search if this page
+                                $numberOfItems=0;
                                 while ($row = $result->fetch()) {
+                                    $numberOfItems++;
                             ?>
                             <tr>
                                 <td>
@@ -498,11 +594,11 @@
                     
                         <div class="pageThrough">
                             <div>
-                                <input type="hidden" name="pageThroughPageCustomers" value="<?php echo $pageThroughPageCustomers; ?>"><?php if($pageThroughPageCustomers>1) { ?>
+                                <input type="hidden" name="pageThroughPageCustomers" value="<?php echo $pageThroughPageCustomers; ?>"><?php if($pageThroughPageCustomers>1 && !isset($_POST['customerSearch'])) { ?>
                                 <button name="previousPageCustomers" type="submit"><</button><?php } ?>
                             </div>
                             <div>
-                                <button name="nextPageCustomers" type="submit">></button>
+                                <?php if($numberOfItems>10 && !isset($_POST['customerSearch'])) { ?><button name="nextPageCustomers" type="submit">></button><?php } ?>
                             </div>
                         </div>
                     </form>
@@ -524,16 +620,32 @@
                                 $pdo = connect_admin();
                                 if(isset($_POST['adminSearch'])){
                                     $admin = filter_input(INPUT_POST, 'adminSearch', FILTER_SANITIZE_NUMBER_INT);
-                                    $adminObject->adminID = $admin;
-                                    $result = $adminObject->get_admin($pdo);
+                                    if($_POST['searchType'] == "AdminId") {
+                                        if(strlen($admin) > ($adminMinLen - 1) && strlen($admin) <= $adminMaxLen) {
+                                            $adminObject->adminID = $admin;
+                                            $result = $adminObject->get_admin($pdo);
+                                        } else {
+                                            $err_message = "Felaktigt adminId";
+                                            $offset = ($pageThroughPageAdmins - 1) * 10;
+                                            $result = get_all_admins($pdo, $limit, $offset);
+                                        }
+                                    } else {
+                                        $err_message = "Kan endast söka på adminID";
+                                        $offset = ($pageThroughPageAdmins - 1) * 10;
+                                        $result = get_all_admins($pdo, $limit, $offset);
+                                    }
                                 } else {
                                     $offset = ($pageThroughPageAdmins - 1) * 10;
                                     $result = get_all_admins($pdo, $limit, $offset);
                                 }
                         ?>
                         <form  action="admin.php?page=administrators" method="post">
+                            <select name="searchType">
+                                <option value="AdminId">AdminId</option>
+                            </select>
                             <input type="text" name="adminSearch"><button name="page" value="administrator"
                                 type="submit">Sök</button>
+                                <?php echo $err_message; ?>
                         </form>
                     </div>
                     <div >
@@ -555,7 +667,9 @@
                         <tbody>
                             <?php
                                 // print a row of the table for each row in the search if this page is showing
+                                $numberOfItems=0;
                                 while ($row = $result->fetch()) {
+                                    $numberOfItems++;
                             ?>
                             <tr>
                                 <td>
@@ -585,11 +699,11 @@
                     <form  action="admin.php?page=administrators" method="post">
                         <div class="pageThrough">
                             <div>
-                                <input type="hidden" name="pageThroughPageAdmins" value="<?php echo $pageThroughPageAdmins; ?>"><?php if($pageThroughPageAdmins>1) { ?>
+                                <input type="hidden" name="pageThroughPageAdmins" value="<?php echo $pageThroughPageAdmins; ?>"><?php if($pageThroughPageAdmins>1 && !isset($_POST['adminSearch'])) { ?>
                                 <button name="previousPageAdmins" type="submit"><</button><?php } ?>
                             </div>
                             <div>
-                                <button name="nextPageAdmins" type="submit">></button>
+                                <?php if($numberOfItems>10 && !isset($_POST['adminSearch'])) { ?><button name="nextPageAdmins" type="submit">></button><?php } ?>
                             </div>
                         </div>
                     </form>

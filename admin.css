@@ -103,6 +103,13 @@ nav ul li a:visited, nav ul li a:active{
 
 .tdfixed {
     max-width: 300px;
+    height: 20px;
+}
+
+.dontJump {
+    max-width: 300px;
+    height: 20px;
+    overflow: hidden;
 }
 
 .centering {
