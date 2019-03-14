@@ -1,0 +1,50 @@
+.checkoutDetails {
+    table-layout: fixed;
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 800px;
+}
+
+.checkoutDetails tr:nth-last-child(-n+3) td {
+    border: 1px solid #000000;
+}
+
+.checkoutDetails tr:nth-last-child(-n+3) td:first-child {
+    border-right: none;
+}
+
+.checkoutDetails tr:nth-last-child(-n+3) td:nth-child(2) {
+    border-left: none;
+}
+
+.checkoutDetails tr:nth-last-child(-n+2) td {
+    border: none;
+}
+
+.detailPic {
+    width: 75px;
+    text-align: center;
+}
+
+.detailDesciption {
+    width: 400px;
+}
+
+.detailPrice {
+    width: 50px;
+    text-align: center;
+}
+
+.detailAmount {
+    width: 50px;
+    text-align: center;
+}
+
+.detailTotal {
+    width: 50px;
+    text-align: center;
+}
+
+.checkoutTable th:last-child {
+    width: 50px;
+}

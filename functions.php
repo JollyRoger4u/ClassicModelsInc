@@ -63,6 +63,17 @@ function max_productCode($pdo) {
 
 }
 
+function max_order_id($pdo) {
+
+     $sql = "SELECT max(orderNumber) FROM orders";
+
+     $toGet = $pdo->prepare($sql); // prepared statement
+     $toGet->execute(); // execute sql statment
+
+     return $toGet;
+
+}
+
 function get_all_productlines($pdo, $limit, $offset) {
      $sql = "";
      if($offset>0){
