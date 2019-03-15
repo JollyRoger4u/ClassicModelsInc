@@ -1,52 +1,63 @@
-<?php require_once "classicmodels_connect.php";
+<?php 
 
-if (isset($_GET['product'])) {
-    $product_no = filter_input(INPUT_GET, 'product', FILTER_SANITIZE_ENCODED);
-} else {
-    $product_no = 'S12_1099';
+require_once "classes.php";
+
+$cart = [];
+
+if (isset($_POST['buy'])) {
+    echo "Varan tillagd i korg";
+    echo "<pre>";
+   //print_r($_POST);
+    echo "</pre>";
+
+    $cart_item = [
+        'id' => $_POST['productid'],
+        'noOfItems' => $_POST['noOfProducts']
+    ];
+
+    array_push($cart, $cart_item);
+
+    setcookie("cart", serialize($cart), time()+35);
 }
-
-$stmt = $pdo->prepare("SELECT * FROM classicmodels.products WHERE productCode = :product_code;");
-
-$stmt->execute([
-    ':product_code' => $product_no
-]);
-
-$product = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$product = $product[0];
-
- ?>
-
+$test = new Product;
+$test->productCode = $_GET['product'];
+$result = $test->get_product();
+?>
 <!DOCTYPE html>
 <html>
     <head>
-        <script type="text/javascript" src="inlup.js"></script>
-        <link rel="stylesheet" type="text/css" href="inlup.php">
+        <script type="text/javascript" src="js.js"></script>
+        <link rel="stylesheet" type="text/css" href="style.css">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+            </head>
 
-
-    </head>
-
-    <body>
-
-
-        <main>
-        <article>          
+    <?php include_once "header.php" ?>
+  <main>
+        <?php
+while ($row = $result->fetch()) {
+    ?>
+        <article> 
+        <a href="shop.php">Tillbaka till shoppen</a> 
+            <form method="post">        
         <section class="gallery">
-<img src="<?php echo $product['productImage']; ?>">
+<img src="<?php echo $row['productImage']; ?>">
         </section>
         <section class="product-details">
-            <h2><?php echo $product['productName']; ?></h2>
-                <p><?php echo $product['productDescription']; ?></p>
-               <h3><?php echo $product['MSRP']; ?>kr</h3>
-               <input type="submit" value="Lägg i varukorg">
+            <h2><?php echo $row['productName']; ?></h2>
+                <p><?php echo $row['productDescription']; ?></p>
+               <input type="text" name="price"value="<?php echo $row['MSRP'] ?>">
+               <input type ="hidden" name="productid" value="<?php echo $row['productCode'] ?>">
+        <input type="number" name="noOfProducts" value="1">
+<input type="submit" name="buy" value="Lägg till i korgen">
+<a href="varukorg.php">Till varukorgen</a>
         </section>
-       
+<?php } ?>     
 
     </article>
+</form>
         </main>
-    </body>
+        <?php include_once "footer.php" ?>
 </html>
+        
+   
