@@ -17,7 +17,7 @@ if (isset($_POST['buy'])) {
 
     array_push($cart, $cart_item);
 
-    setcookie("cart", serialize($cart), time()+35);
+    setcookie("cart", serialize($cart), time()+3500);
 }
 $test = new Product;
 $test->productCode = $_GET['product'];
