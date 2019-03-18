@@ -13,7 +13,7 @@ class Administrator {
     public function get_admin() {
         $pdo = connect_admin();
 
-        $sql = "SELECT * FROM admins WHERE adminID = '". $this->{"adminID"} . "'"; // sql statement
+        $sql = "SELECT * FROM admins WHERE adminID = '" . $this->{"adminID"} . "'"; // sql statement
 
         $toGet = $pdo->prepare($sql); // prepared statement
         $toGet->execute(); // execute sql statment

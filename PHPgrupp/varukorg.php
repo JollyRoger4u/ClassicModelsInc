@@ -1,18 +1,31 @@
-<?php require_once "classes.php";
+<?php 
+require_once "classes.php";
 
 $cart = [];
+$i = 0;
+$test2 = new Product;
+$sum = 0; 
 
 if(isset($_COOKIE["cart"])) {
     $cart = unserialize($_COOKIE["cart"])   ;
 }
 
-$test2 = new Product;
-//$test2->productCode = $_GET['product'];
- ?>
+if (isset($_POST['deleteBtn']) && $_POST['index_to_remove'] != "") {
+    foreach($cart as $key=>$value) {
+        if($value["id"] == $_POST['index_to_remove']) {
+            unset($cart[$i]);
+            
+            setcookie("cart", serialize($cart), time()+3500);
+        }
+    }
+    $i++;
+}
 
-  <?php include_once "header.php" ?>
+include_once "header.php" ?>
+
+  <main>
 <div class="cart">
-<strong>Varukorg</strong><br>
+<h1>Varukorg</h1>
 <table>
     <tr>
         <th>Titel</th>
@@ -20,28 +33,35 @@ $test2 = new Product;
         <th>Pris</th>
         <th>Antal</th>
         <th>Summa</th>
+        <th>Ta bort</th>
     </tr>
-    <?php $sum = 0; ?>
+<?php
 
-        <?php foreach($cart as $cart_item): ?>
-<?php $product_id = $cart_item['id'];
-$test2->productCode = $product_id;
-$result = $test2->get_product();
-while ($row = $result->fetch()){
-     ?>
-     <?php  $rowsum = $row['MSRP'] * $cart_item['noOfItems'];
-$sum += $rowsum; ?>
+    foreach($cart as $cart_item) {
+        $test2->productCode = $cart_item['id'];
+        $result = $test2->get_product();
+        while ($row = $result->fetch()){
+    
+            $rowsum = $row['MSRP'] * $cart_item['noOfItems'];
+            $sum += $rowsum; 
+?>
     <tr class="cartitem">
         <td><?php echo $row['productName']; ?></td>
         <td><?php echo $row['productCode']; ?></td>
         <td><?php echo $row['MSRP']; ?></td>
-        <td><?php echo $cart_item['noOfItems']; ?></td>
+        <td><button id="substract"><</button>
+            <input id="noOfItems" name="noOfItems" type="text" value="<?php echo $cart_item['noOfItems']; ?>" size="1" maxlength="2">
+            <button id="add">></button></td>
         <td><?php echo $rowsum; ?></td>
-</tr><?php } ?>
-    <?php endforeach; ?>
+        <td><form action="varukorg.php" method="post"><input name="deleteBtn" type="submit" value="X"/>
+        <input name="index_to_remove" type="hidden" value="<?php echo $row['productCode']; ?>" /></form></td>;
+	</tr>
+<?php   }
+    } ?>
     <tr>
         <td colspan="3">Summa:</td>
         <td><?php echo $sum; ?></td>
+        <td>&nbsp;</td>
     </tr>
 </table>
 </div>
