@@ -5,74 +5,75 @@
     include_once "classes.php";
     // check that you are logged in otherwise reroute to login page
 
-    /*if(!isset($_COOKIE['administrator'])) {
-                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php\'">';
-    }*/ //enable when tables are complete
-    // create a customer object and an error message variable just in case
+    if(!isset($_COOKIE['administrator'])) {
+                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
+    } else {
+        // create a customer object and an error message variable just in case
 
-    $customerObject = new Customer;
-    $err_message = "";
+        $customerObject = new Customer;
+        $err_message = "";
 
-    // check if the customer has been saved
+        // check if the customer has been saved
 
-    if(isset($_POST['saveCustomer'])){
-        $customerNumber = filter_input(INPUT_POST, 'customerNumber', FILTER_SANITIZE_MAGIC_QUOTES);
-        $customerName = filter_input(INPUT_POST, 'customerName', FILTER_SANITIZE_MAGIC_QUOTES);
-        $contactLastName = filter_input(INPUT_POST, 'contactLastName', FILTER_SANITIZE_MAGIC_QUOTES);
-        $contactFirstName = filter_input(INPUT_POST, 'contactFirstName', FILTER_SANITIZE_MAGIC_QUOTES);
-        $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_MAGIC_QUOTES);
-        $addressLine1 = filter_input(INPUT_POST, 'addressLine1', FILTER_SANITIZE_MAGIC_QUOTES);
-        $addressLine2 = filter_input(INPUT_POST, 'addressLine2', FILTER_SANITIZE_MAGIC_QUOTES);
-        $city = filter_input(INPUT_POST, 'city', FILTER_SANITIZE_MAGIC_QUOTES);
-        $state = filter_input(INPUT_POST, 'state', FILTER_SANITIZE_MAGIC_QUOTES);
-        $postalCode = filter_input(INPUT_POST, 'postalCode', FILTER_SANITIZE_MAGIC_QUOTES);
-        $country = filter_input(INPUT_POST, 'country', FILTER_SANITIZE_MAGIC_QUOTES);
-        $salesRepEmployeeNumber = filter_input(INPUT_POST, 'salesRepEmployeeNumber', FILTER_SANITIZE_MAGIC_QUOTES);
-        $creditLimit = filter_input(INPUT_POST, 'creditLimit', FILTER_SANITIZE_MAGIC_QUOTES);
-        
-        $customerObject->customerNumber = $customerNumber;
-        $customerObject->customerName = $customerName;
-        $customerObject->contactLastName = $contactLastName;
-        $customerObject->contactFirstName = $contactFirstName;
-        $customerObject->phone = $phone;
-        $customerObject->addressLine1 = $addressLine1;
-        $customerObject->addressLine2 = $addressLine2;
-        $customerObject->city = $city;
-        $customerObject->state = $state;
-        $customerObject->postalCode = $postalCode;
-        $customerObject->country = $country;
-        $customerObject->salesRepEmployeeNumber = $salesRepEmployeeNumber;
-        $customerObject->creditLimit = $creditLimit;
-        $customerObject->update_customer();
-        echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=customers\'">';
-    }
+        if(isset($_POST['saveCustomer'])){
+            $customerNumber = filter_input(INPUT_POST, 'customerNumber', FILTER_SANITIZE_MAGIC_QUOTES);
+            $customerName = filter_input(INPUT_POST, 'customerName', FILTER_SANITIZE_MAGIC_QUOTES);
+            $contactLastName = filter_input(INPUT_POST, 'contactLastName', FILTER_SANITIZE_MAGIC_QUOTES);
+            $contactFirstName = filter_input(INPUT_POST, 'contactFirstName', FILTER_SANITIZE_MAGIC_QUOTES);
+            $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_MAGIC_QUOTES);
+            $addressLine1 = filter_input(INPUT_POST, 'addressLine1', FILTER_SANITIZE_MAGIC_QUOTES);
+            $addressLine2 = filter_input(INPUT_POST, 'addressLine2', FILTER_SANITIZE_MAGIC_QUOTES);
+            $city = filter_input(INPUT_POST, 'city', FILTER_SANITIZE_MAGIC_QUOTES);
+            $state = filter_input(INPUT_POST, 'state', FILTER_SANITIZE_MAGIC_QUOTES);
+            $postalCode = filter_input(INPUT_POST, 'postalCode', FILTER_SANITIZE_MAGIC_QUOTES);
+            $country = filter_input(INPUT_POST, 'country', FILTER_SANITIZE_MAGIC_QUOTES);
+            $salesRepEmployeeNumber = filter_input(INPUT_POST, 'salesRepEmployeeNumber', FILTER_SANITIZE_MAGIC_QUOTES);
+            $creditLimit = filter_input(INPUT_POST, 'creditLimit', FILTER_SANITIZE_MAGIC_QUOTES);
+            
+            $customerObject->customerNumber = $customerNumber;
+            $customerObject->customerName = $customerName;
+            $customerObject->contactLastName = $contactLastName;
+            $customerObject->contactFirstName = $contactFirstName;
+            $customerObject->phone = $phone;
+            $customerObject->addressLine1 = $addressLine1;
+            $customerObject->addressLine2 = $addressLine2;
+            $customerObject->city = $city;
+            $customerObject->state = $state;
+            $customerObject->postalCode = $postalCode;
+            $customerObject->country = $country;
+            $customerObject->salesRepEmployeeNumber = $salesRepEmployeeNumber;
+            $customerObject->creditLimit = $creditLimit;
+            $customerObject->update_customer();
+            echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=customers\'">';
+        }
 
-    if(isset($_POST['changePassword'])) {
-        $customerNumber = filter_input(INPUT_POST, 'customerNumber', FILTER_SANITIZE_MAGIC_QUOTES);
-        $oldPassword = filter_input(INPUT_POST, 'oldPassword', FILTER_SANITIZE_MAGIC_QUOTES);
-        $newPassword = filter_input(INPUT_POST, 'newPassword', FILTER_SANITIZE_MAGIC_QUOTES);
-        $repeatNewPassword = filter_input(INPUT_POST, 'repeatNewPassword', FILTER_SANITIZE_MAGIC_QUOTES);
+        if(isset($_POST['changePassword'])) {
+            $customerNumber = filter_input(INPUT_POST, 'customerNumber', FILTER_SANITIZE_MAGIC_QUOTES);
+            $oldPassword = filter_input(INPUT_POST, 'oldPassword', FILTER_SANITIZE_MAGIC_QUOTES);
+            $newPassword = filter_input(INPUT_POST, 'newPassword', FILTER_SANITIZE_MAGIC_QUOTES);
+            $repeatNewPassword = filter_input(INPUT_POST, 'repeatNewPassword', FILTER_SANITIZE_MAGIC_QUOTES);
 
-        $customerObject->customerNumber = $customerNumber;
+            $customerObject->customerNumber = $customerNumber;
 
-        //password checks
-        $checkPassword = $customerObject->get_password();
+            //password checks
+            $checkPassword = $customerObject->get_password();
 
-        //check that the new password is the same as the repeated one
-        if($newPassword==$repeatNewPassword) {
-            $err_message = "New password doesnt match the repeated New Password";
+            //check that the new password is the same as the repeated one
+            if($newPassword==$repeatNewPassword) {
+                $err_message = "New password doesnt match the repeated New Password";
 
-        // check that the new password the same as the old password
-        } elseif($newPassword == $checkPassword) {
-            $err_message = "Password is already set.";
+            // check that the new password the same as the old password
+            } elseif($newPassword == $checkPassword) {
+                $err_message = "Password is already set.";
 
-        //check that it isnt too short
-        } elseif (strlen($newPassword)<8){
-            $err_message = "Password too short.";
+            //check that it isnt too short
+            } elseif (strlen($newPassword)<8){
+                $err_message = "Password too short.";
 
-        } else {
-            $customerObject->password = $newPassword;
-            $customerObject->change_password();
+            } else {
+                $customerObject->password = $newPassword;
+                $customerObject->change_password();
+            }
         }
     }
     ?>

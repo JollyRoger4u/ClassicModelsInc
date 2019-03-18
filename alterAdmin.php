@@ -5,9 +5,9 @@
     include_once "classes.php";
     // check that you are logged in otherwise reroute to login page
 
-    /*if(!isset($_COOKIE['administrator'])) {
-                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php\'">';
-    }*/ //enable when tables are complete
+    if(!isset($_COOKIE['administrator'])) {
+                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
+    }
     
     // create an admin object and an error message variable just in case
 

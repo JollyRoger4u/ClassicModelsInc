@@ -6,8 +6,7 @@
     if(isset($_POST['login'])) {
     // a couple of variable to keep track of if the login attempt failed.
 
-    $wrongpassword = 0;
-    $wrongID = 0;
+    $err_message = "";
 
     // get and sanitize input
 
@@ -15,29 +14,14 @@
     $password = filter_input(INPUT_GET, 'password', FILTER_SANITIZE_MAGIC_QUOTES);
     
     // connect to database
-
-    $pdo = connect_login();
-
-    // select the admin with that id
-
-    $sql = "SELECT * FROM admins WHERE adminID = $adminID";
-
-    $toDisplay = $pdo->prepare($sql); // prepared statement
-    $toDisplay->execute(); // execute sql statment
-    $result = $toDisplay->fetch();
-    if($result != NULL){
-        if($result['password'] == $password){
-            //set cookie and redirect
-            setcookie("administrator", $adminID]);
-            echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=start\'">';
-        } else {
-            $wrongpassword = 1;
-        }
+    $result = check_admin_login($adminID, $password);
+    if(gettype($result) == 'string') {
+        $err_message = "Log in failed. Check that your ID and password are correct.";
     } else {
-        $wrongID = 1;
+        setcookie("administrator", $adminID, time() + (60 * 60 * 12 ), "/");
+        echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=start\'">';
     }
 
-    }
 ?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -53,19 +37,17 @@
     <div>
         <form action="admin_login.php" method="post">
             <div>Administrator ID: <input name="adminID" type="text"></div>
-            <div>Password:         <input name="password" type="text"></div>
+            <div>Password:         <input name="password" type="password"></div>
             <input type="submit" value="Logga in" name="login">
         </form>
     </div>
+    <div class="errMessage">
+        <p><?php
 
-    <?php
+        echo $err_message;
 
-    if($wrongID == 1 || $wrongpassword == 1) {
-        Log in failed. Check that your ID and password are correct.
-    }
-
-    ?>
-
+        ?></p>
+    </div>
 
 </body>
 </html>

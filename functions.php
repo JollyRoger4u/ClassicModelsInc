@@ -154,4 +154,23 @@ function get_all_admins($pdo, $limit, $offset) {
      return $toGet;
 }
 
+function check_admin_login($loginName, $password) {
+
+     $pdo = connect_admin();
+     $sql = "SELECT * FROM admins WHERE adminID = $adminID";
+     $toGet = $pdo->prepare($sql); // prepared statement
+     $toGet->execute(); // execute sql statment
+     $result = $toGet->fetch();
+     if(isset($result['adminID'])) {
+          if($result['password'] == $password) {
+               return $toGet;
+          } else {
+               return "Wrong password";
+          }
+     } else {
+          return "No such user";
+     }
+
+}
+
 ?>
