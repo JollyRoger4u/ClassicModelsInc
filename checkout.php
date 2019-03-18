@@ -4,9 +4,9 @@
     include_once 'classes.php';
     // check that you are logged in otherwise reroute to login page
 
-    /*if(!isset($_COOKIE['user'])) {
+    if(!isset($_SESSION['currentUser'])) {
                 echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'login.php\'">';
-    }*/ //enable when tables are complete
+    }
 
     // initilisation values
     $productObject = new Product; //to get and list products
