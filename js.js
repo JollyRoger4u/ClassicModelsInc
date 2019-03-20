@@ -1,8 +1,8 @@
-let counter = 0;
+let noOfItems = 0;
 
 function subtract(){
-  counter = counter-1;
-  document.getElementById("noOfItems").innerHTML = counter;
+  noOfItems = noOfItems-1;
+  document.getElementById("noOfItems").innerHTML = noOfItems;
 }
 
 function add(){

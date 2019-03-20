@@ -10,7 +10,7 @@ if(isset($_COOKIE["cart"])) {
 if (isset($_POST['deleteBtn']) && $_POST['index_to_remove'] != "") {
     foreach($cart as &$cart_item) {
         if($cart_item["id"] == $_POST['index_to_remove']) {
-            $temp = $cart_item["id"] -1;
+            $temp = ((int)$cart_item["id"]) -1;
             unset($cart_item["id"]);
             $cart_item["id"] = $temp;
             
@@ -46,7 +46,7 @@ include_once "header.php" ?>
         <td><?php echo $row['productName']; ?></td>
         <td><?php echo $row['productCode']; ?></td>
         <td><?php echo $row['MSRP']; ?></td>
-        <td><button id="subtract"><</button>
+        <td><button id="subtract" onclick="subtract()";><</button>
            <input id="noOfItems" name="noOfItems" type="text" value="<?php echo $cart_item['noOfItems']; ?>" size="1" maxlength="2">
             <button id="add">></button></td>
         <td><?php echo $rowsum; ?></td>
