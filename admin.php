@@ -1,5 +1,8 @@
-
-
+<?php  $session_test = session_start();
+        if(!$session_test) {
+            echo "session not started";
+        }
+?>
 <!DOCTYPE html>
 <html>
 
@@ -8,10 +11,12 @@
     include_once "classes.php";
     // check that you are logged in otherwise reroute to login page
 
-    if(!isset($_COOKIE['administrator'])) {
-                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
+    if(!(isset($_SESSION['administrator']))) {
+        echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
     }
+        //general variables
 
+        $err_message = "";
 
         //object for searches
 
@@ -62,13 +67,13 @@
         $pdo = connect_admin();
         $adminMaxResult = max_admin_id($pdo);
         $adminMaxRow = $adminMaxResult->fetch();
-        $adminMax = $adminMaxRow['max(adminID)'];
+        $adminMax = $adminMaxRow['max(ID)'];
         $adminMaxLen = strlen($adminMax);
 
         $pdo = connect_admin();
         $adminMinResult = min_admin_id($pdo);
         $adminMinRow = $adminMinResult->fetch();
-        $adminMin = $adminMinRow['min(adminID)'];
+        $adminMin = $adminMinRow['min(ID)'];
         $adminMinLen = strlen($adminMin);
 
         if(isset($_POST['nextPageOrders'])) {
@@ -76,7 +81,7 @@
             } elseif (isset($_POST['previousPageOrders'])) {
                 $pageThroughPageOrders = $_POST['pageThroughPageOrders'] - 1;
         }
-        
+       
         if(isset($_POST['nextPageProducts'])) {
             $pageThroughPageProducts = $_POST['pageThroughPageProducts'] + 1;
         } elseif (isset($_POST['previousPageProducts'])) {
@@ -102,10 +107,37 @@
         }
         // just in case
         $err_message = "";
+
+        //check if the profile has been saved or a new password put in
+
+        if(isset($_POST['savePassword'])){
+            $adminID = filter_input(INPUT_POST, 'ID', FILTER_SANITIZE_MAGIC_QUOTES);
+            $oldPassword = $_POST['oldpassword']; // filter_input(INPUT_POST, 'oldpassword', FILTER_SANITIZE_MAGIC_QUOTES);
+            $newPassword = $_POST['newPassword'];//filter_input(INPUT_POST, 'newPassword', FILTER_SANITIZE_MAGIC_QUOTES);
+
+            $adminObject->ID = $adminID;
+            $adminObject->password = $oldPassword;
+            //password checks
+            $checkPassword = $adminObject->check_admin_login();
+            // check that the new password the same as the old password
+            $passwordCompare = ($oldPassword === $newPassword);
+            if($passwordCompare) {
+                $err_message = "Password is already set.";
+            } else {
+                $passwordHashed = password_hash($newPassword, PASSWORD_DEFAULT);
+                $adminObject->password = $passwordHashed;
+                $return = $adminObject->change_password();
+                if(!$return) {
+                    $err_message = "Couldnt sage the password. Contact it support.";
+                } else {
+                    $err_message = "Profile saved.";
+                }
+            }
+        }
     ?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>Administration</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="admin.css">
     <script src="admin.js"></script>
@@ -119,34 +151,13 @@
     $page = "";
 
     if(isset($_GET['page'])) {
-        switch ($_GET['page']) {
-            case "orders":
-                $page = "orders";
-                break;
+        $page = $_GET['page'];
+    } else{
+        $page = "start";
+    }
 
-            case "products":
-                $page = "products";
-                break;
-
-            case "productlines":
-                $page = "productlines";
-                break;
-                
-            case "customers":
-            $page = "customers";
-                break;
-
-            case "administrators":
-                $page = "administrators";
-                break;
-
-            case "profile":
-                $page = "profile";
-                break;
-
-            default:
-                $page = "start";
-        }
+    if(isset($_POST['page'])){
+        $page = $_POST['page'];
     }
 
 ?>
@@ -177,7 +188,7 @@
                         if(isset($_POST['orderSearch'])){
                             $orderID = filter_input(INPUT_POST, 'orderSearch', FILTER_SANITIZE_NUMBER_INT);
                             if($_POST['searchType'] == "Ordernummer"){
-                                if(strlen($orderID) > 5 && strlen($orderID) <= $orderMaxLen){
+                                if(strlen($orderID) >= 5 && strlen($orderID) <= $orderMaxLen){
                                 $orderObject->orderNumber = $orderID;
                                 $result = $orderObject->get_order_by_orderNumber();
                                 } else {
@@ -614,15 +625,16 @@
                 <div class="tables">
 
                     <h1>Administratörer</h1>
-                    <div  >
+                    <div>
                         <?php
                             if($page=="administrators"){
                                 $pdo = connect_admin();
+                                $result = [];
                                 if(isset($_POST['adminSearch'])){
                                     $admin = filter_input(INPUT_POST, 'adminSearch', FILTER_SANITIZE_NUMBER_INT);
                                     if($_POST['searchType'] == "AdminId") {
-                                        if(strlen($admin) > ($adminMinLen - 1) && strlen($admin) <= $adminMaxLen) {
-                                            $adminObject->adminID = $admin;
+                                        if(strlen($admin) >= ($adminMinLen) && strlen($admin) <= $adminMaxLen) {
+                                            $adminObject->ID = $admin;
                                             $result = $adminObject->get_admin($pdo);
                                         } else {
                                             $err_message = "Felaktigt adminId";
@@ -639,11 +651,11 @@
                                     $result = get_all_admins($pdo, $limit, $offset);
                                 }
                         ?>
-                        <form  action="admin.php?page=administrators" method="post">
+                        <form action="admin.php?page=administrators" method="post">
                             <select name="searchType">
                                 <option value="AdminId">AdminId</option>
                             </select>
-                            <input type="text" name="adminSearch"><button name="page" value="administrator"
+                            <input type="text" name="adminSearch"><button name="page" value="administrators"
                                 type="submit">Sök</button>
                                 <?php echo $err_message; ?>
                         </form>
@@ -658,7 +670,7 @@
                     <table class="fixedTable">
                         <thead>
                             <tr>
-                                <th>Administratörens arbetstagarnummer</th>
+                                <th>ID</th>
                                 <th>Efternamn</th>
                                 <th>Förnamn</th>
                                 <th>Redigera</th>
@@ -673,17 +685,17 @@
                             ?>
                             <tr>
                                 <td>
-                                    <?php echo $row['adminID']; ?>
+                                    <?php echo $row['ID']; ?>
                                 </td>
                                 <td>
-                                    <?php echo $row['adminLastName']; ?>
+                                    <?php echo $row['LastName']; ?>
                                 </td>
                                 <td>
-                                    <?php echo $row['adminFirstName']; ?>
+                                    <?php echo $row['FirstName']; ?>
                                 </td>
                                 <td>
                                     <form method="POST" action="alterAdmin.php">
-                                        <input type="hidden" name="number" value="<?php echo $row['adminID']; ?>">
+                                        <input type="hidden" name="number" value="<?php echo $row['ID']; ?>">
                                         <button type="submit">Redigera</button>
                                     </form>
                                 </td>
@@ -719,37 +731,36 @@
                     <h1>Min Profil</h1>
                     <?php
                         if($page=="profile"){
-                            $administratorNumber = filter_input(INPUT_COOKIE, 'adminID', FILTER_SANITIZE_NUMBER_INT);
-                            $adminObject->adminID = $administratorNumber;
+                            $administratorNumber = $_SESSION['administrator'];
+                            $adminObject->ID = $administratorNumber;
                             $result = $adminObject->get_admin();
                             $row = $result->fetch();
                     ?>
+                    <div><?php echo $err_message; ?></div>
                     <table class="fixedTable">
                         <tbody>
                             <tr>
                                 <td>ID</td>
                                 <td>
-                                    <input type="hidden" name="adminID" value="<?php echo $row['adminID']; ?>">
-                                    <input type="text" value="<?php echo $row['adminID']; ?>" disabled>
+                                    <input type="hidden" name="adminID" value="<?php echo $row['ID']; ?>">
+                                    <input type="text" value="<?php echo $row['ID']; ?>" disabled>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Efternamn</td>
-                                <td><input type="text" name="adminLastName" value="<?php echo $row['adminLastName']; ?>"></td>
+                                <td><input type="text" name="adminLastName" value="<?php echo $row['LastName']; ?>"></td>
                             </tr>
                             <tr>
                                 <td>Förnamn</td>
-                                <td><input type="text" name="adminFirstName" value="<?php echo $row['adminFirstName']; ?>"></td>
+                                <td><input type="text" name="adminFirstName" value="<?php echo $row['FirstName']; ?>"></td>
                             </tr>
                             <tr>
                                 <td>Lösenord
                                 </td>
                                 <td>
                                     <?php 
-                                        $length = strlen($row['password']);
-                                        for($i=0;$i<$length;$i++) {
-                                            echo "*";
-                                        }
+                                        $length = 8;
+                                        echo str_repeat("*", $length);
                                     ?>
                                 </td>
                             </tr>
@@ -758,6 +769,7 @@
                                     <button id="changePasswordButton">Ändra lösenord</button>
                                 </td>
                                 <td>
+                                    <input type="hidden" name="page" value="profile">
                                     <input type="submit" name="saveAdmin" value="Spara">
                                 </td>
                             </tr>
@@ -772,15 +784,7 @@
                         <table>
                             <tr>
                                 <td colspan="2">
-                                    <?php
-
-                                    if($err_message = ""){
-                                        echo "Ändra lösenord nedan";
-                                    } else {
-                                        echo $err_message;
-                                    }
-
-                                    ?>
+                                    <?php echo "Ändra lösenord nedan"; ?>
                                 </td>
                                 <td>
                                 </td>
@@ -805,14 +809,15 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <button id="cancelPasswordButton">Ångra</button>
-                                </td>
-                                <td>
+                                    <input type="hidden" name="page" value="profile">
                                     <input type="submit" id="savePasswordButton" name="savePassword" value="Spara Lösenord">
+                                </td>
+                    </form>
+                                <td>
+                                    <button id="cancelPasswordButton">Ångra</button>
                                 </td>
                             </tr>
                         </table>
-                    </form>
                 </div>    
             </div>
             <?php

@@ -1,3 +1,8 @@
+<?php  $session_test = session_start();
+        if(!$session_test) {
+            echo "Session har inte startat.";
+        }
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,8 +10,8 @@
     include_once "classes.php";
     // check that you are logged in otherwise reroute to login page
 
-    if(!isset($_COOKIE['administrator'])) {
-                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
+    if(!(isset($_SESSION['administrator']))) {
+        echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
     } else {
         // create a customer object and an error message variable just in case
 
@@ -43,43 +48,48 @@
             $customerObject->country = $country;
             $customerObject->salesRepEmployeeNumber = $salesRepEmployeeNumber;
             $customerObject->creditLimit = $creditLimit;
-            $customerObject->update_customer();
-            echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=customers\'">';
+            $test = $customerObject->update_customer();
+            if($test) {
+            echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin.php?page=customers\'">';
+            }
         }
 
-        if(isset($_POST['changePassword'])) {
-            $customerNumber = filter_input(INPUT_POST, 'customerNumber', FILTER_SANITIZE_MAGIC_QUOTES);
-            $oldPassword = filter_input(INPUT_POST, 'oldPassword', FILTER_SANITIZE_MAGIC_QUOTES);
+        if(isset($_POST['savePassword'])) {
+            $customerNumber = filter_input(INPUT_POST, 'number', FILTER_SANITIZE_MAGIC_QUOTES);
             $newPassword = filter_input(INPUT_POST, 'newPassword', FILTER_SANITIZE_MAGIC_QUOTES);
-            $repeatNewPassword = filter_input(INPUT_POST, 'repeatNewPassword', FILTER_SANITIZE_MAGIC_QUOTES);
 
             $customerObject->customerNumber = $customerNumber;
 
             //password checks
-            $checkPassword = $customerObject->get_password();
-
-            //check that the new password is the same as the repeated one
-            if($newPassword==$repeatNewPassword) {
-                $err_message = "New password doesnt match the repeated New Password";
+            $databasePasswordGet = $customerObject->get_password();
+            $databasePassword = $databasePasswordGet->fetch();
+            $checkPassword = $databasePassword['password'];
 
             // check that the new password the same as the old password
-            } elseif($newPassword == $checkPassword) {
-                $err_message = "Password is already set.";
+            if($newPassword == $checkPassword) {
+                $err_message = "Lösenordet är redan satt.";
 
             //check that it isnt too short
             } elseif (strlen($newPassword)<8){
-                $err_message = "Password too short.";
+                $err_message = "Lösenordet är för kort. Det behöver vara minst 8 tecken.";
 
             } else {
-                $customerObject->password = $newPassword;
-                $customerObject->change_password();
+                $passwordHashed = password_hash($newPassword, PASSWORD_DEFAULT);
+                $customerObject->password = $passwordHashed;
+                $test = $customerObject->change_password();
+                if($test) {
+                    echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin.php?page=customers\'">';
+                    $err_message = "Kund sparad.";
+                } else {
+                    $err_message = "Kunde inte spara kontakta IT supporten.";
+                }
             }
         }
     }
     ?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>Ändra Kund</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="admin.css">
     <script src="admin.js"></script>
@@ -90,13 +100,14 @@
     <main class="customer">
         <!-- List the different info --><?php
         //fetch the admin to alter from post
-
+        
         $customerID = filter_input(INPUT_POST, 'number', FILTER_SANITIZE_NUMBER_INT);
-
+        
         $customerObject->customerNumber=$customerID;
         $result = $customerObject->get_customer();
         $row = $result->fetch();
         ?>
+            <div><?php echo $err_message; ?></div>
             
             <table>
         <form action="alterCustomer.php" method="post">
@@ -104,6 +115,7 @@
                     <td>Kundnummer
                     </td>
                     <td>
+                        <input type="hidden" name="number" value="<?php echo $row['customerNumber']; ?>">
                         <input type="hidden" name="productID" value="<?php echo $row['customerNumber']; ?>">
                         <input type="text" value="<?php echo $row['customerNumber']; ?>" disabled>
                     </td>
@@ -184,25 +196,21 @@
                     <td>Lösenord
                     </td>
                     <td>
-                        <input type="hidden" name="password" value="<?php
-                            $length = strlen($row['password']);
-                            echo  str_repeat("*", $length); ?>">
                         <?php
-                            $length = strlen($row['password']);
+                            $length = 8;
                             echo  str_repeat("*", $length);
                         ?>
                     </td>
                 </tr>
-        </form>
                 <tr>
                     <td>
-                        <button id="changePasswordButton">Ändra lösenord</button>
-                    </td>
-        <form action="alterCustomer.php" method="post">
-                    <td>
+                        <input type="hidden" name="number" value="<?php echo $row['customerNumber']; ?>">
                         <input type="submit" name="saveCustomer" value="Spara">
                     </td>
         </form>
+                    <td>
+                        <button id="changePasswordButton">Ändra lösenord</button>
+                    </td>
                 </tr>
             </table>
 
@@ -214,23 +222,7 @@
                 <form action="alterCustomer.php" method="post">
                         <tr>
                             <td colspan="2">
-                                <?php
-
-                                if($err_message = ""){
-                                    echo "Ändra lösenord nedan";
-                                } else {
-                                    echo $err_message;
-                                }
-
-                                ?>
-                            </td>
-                            <td>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Nuvarande Lösenord
-                            </td>
-                            <td><input type="text" name="oldpassword">
+                                <?php echo "Ändra lösenord nedan"; ?>
                             </td>
                         </tr>
                         <tr>
@@ -245,16 +237,15 @@
                             <td><input type="text" name="repeatNewPassword">
                             </td>
                         </tr>
-                </form>
                         <tr>
                             <td>
-                                <button id="cancelPasswordButton">Ångra</button>
-                            </td>
-                <form action="alterCustomer.php" method="post">
-                            <td>
+                        <input type="hidden" name="number" value="<?php echo $row['customerNumber']; ?>">
                                 <input type="submit" id="savePasswordButton" name="savePassword" value="Spara Lösenord">
                             </td>
                 </form>
+                            <td>
+                                <button id="cancelPasswordButton">Ångra</button>
+                            </td>
                         </tr>
                     </table>
             </div>    

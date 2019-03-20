@@ -1,3 +1,8 @@
+<?php  $session_test = session_start();
+        if(!$session_test) {
+            echo "Session är inte startad.";
+        }
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,8 +10,8 @@
     include_once "classes.php";
     // check that you are logged in otherwise reroute to login page
 
-    if(!isset($_COOKIE['administrator'])) {
-                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
+    if(!(isset($_SESSION['administrator']))) {
+        echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
     }
 
     // create an order object, an orderdetail object and a counter for the order details connected to the order object
@@ -61,7 +66,7 @@
     ?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>Ändra order</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="admin.css">
     <script src="admin.js"></script>
@@ -128,7 +133,7 @@
                     </tr>
                     <tr>
                         <td>Kommentarer</td>
-                        <td><input type="text" name="comments" value="<?php echo $row['comments']; ?>"></td>
+                        <td><input type="text" name="comments" value="<?php echo $row['comments']; ?>" class="commentSquare"></td>
                     </tr>
                     <tr>
                         <td>Kundnummer</td>

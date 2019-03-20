@@ -6,14 +6,14 @@ class Administrator {
 
     //properties
 
-    public $admin = ['adminID' => 0, 'password' => "something"];
+    public $admin = ['ID' => 0, 'password' => "something"];
 
     //methods
 
     public function get_admin() {
         $pdo = connect_admin();
 
-        $sql = "SELECT * FROM admins WHERE adminID = '". $this->{"adminID"} . "'"; // sql statement
+        $sql = "SELECT * FROM adminLogin WHERE ID = '". $this->{"ID"} . "'"; // sql statement
 
         $toGet = $pdo->prepare($sql); // prepared statement
         $toGet->execute(); // execute sql statment
@@ -24,8 +24,8 @@ class Administrator {
     public function create_admin() {
         $pdo = connect_admin();
 
-        $sql = "INSERT INTO admins (adminID, adminLastName, adminFirstName, adminPassword)
-                VALUES ('" . $this->{"adminID"} . "', '" . $this->{"adminLastName"} . "', '" . $this->{"adminFirstName"} . "', " . $this->{"adminPassword"} . "')"; // sql statement
+        $sql = "INSERT INTO adminLogin (ID, LastName, FirstName, password)
+                VALUES ('" . $this->{"ID"} . "', '" . $this->{"LastName"} . "', '" . $this->{"FirstName"} . "', '" . $this->{"password"} . "')"; // sql statement
 
         $toCreate = $pdo->prepare($sql); // prepared statement
         $return = $toCreate->execute(); // execute sql statment
@@ -36,9 +36,22 @@ class Administrator {
     public function update_admin() {
         $pdo = connect_admin();
 
-        $sql = "UPDATE admins
-                SET adminLastName = '" . $this->{"adminLastName"} . "', adminFirstName = '" . $this->{"adminFirstName"} . "', adminPassword = '" . $this->{"adminPassword"} . "'
-                WHERE adminID = '" . $this->{"adminID"} . "'"; // sql statementS
+        $sql = "UPDATE adminLogin
+                SET LastName = '" . $this->{"LastName"} . "', FirstName = '" . $this->{"FirstName"} . "'
+                WHERE ID = '" . $this->{"ID"} . "'"; // sql statementS
+
+        $toSave = $pdo->prepare($sql); // prepared statement
+        $return = $toSave->execute(); // execute sql statment
+
+        return $return;
+    }
+    
+    public function change_password() {
+        $pdo = connect_admin();
+
+        $sql = "UPDATE adminLogin
+                SET password = '" . $this->{"password"} . "' 
+                WHERE ID = '" . $this->{"ID"} . "'"; // sql statementS
 
         $toSave = $pdo->prepare($sql); // prepared statement
         $return = $toSave->execute(); // execute sql statment
@@ -49,14 +62,45 @@ class Administrator {
     public function delete_admin() {
         $pdo = connect_admin();
 
-        $sql = "DELETE FROM admins
-                WHERE adminID = '" . $this->{"adminID"} . "'"; // sql statementS
+        $sql = "DELETE FROM adminLogin
+                WHERE ID = '" . $this->{"ID"} . "'"; // sql statementS
 
         $toDelete = $pdo->prepare($sql); // prepared statement
         $return = $toDelete->execute(); // execute sql statment
 
         return $return;
     }
+
+    public function check_admin_login() {
+
+        if($this->{'ID'} != 0){
+            $pdo = connect_admin();
+            $sql = "SELECT * FROM adminLogin WHERE ID = '" . $this->{"ID"} . "'";
+            $toGet = $pdo->prepare($sql); // prepared statement
+            $toGet->execute(); // execute sql statment
+            $result = $toGet->fetch();
+
+            if($result == FALSE){
+                return "No such table";
+            } else {
+
+                $test = password_verify($this->{"password"}, $result['password']);
+
+                if(isset($result['ID'])) {
+                    if($test) {
+                        return TRUE;
+                    } else {
+                        return "Wrong password";
+                    }
+                } else {
+                    return "No such user";
+                }
+
+            }
+        } else {
+            return "No user specified";
+        }
+    }    
 }
 
 class Product {
@@ -163,18 +207,6 @@ class ProductLine {
 
         return $return;
     }
-
-    public function upload_picture(){
-        
-        $sql = "UPDATE productLines
-                SET image = '" . $this->{"image"} . "'
-                WHERE productLine = '" . $this->{"productLine"} . "'"; // sql statementS
-
-        $toSave = $pdo->prepare($sql); // prepared statement
-        $return = $toSave->execute(); // execute sql statment
-
-        return $return;
-    }
     
     public function delete_productline() {
         $pdo = connect_admin();
@@ -219,7 +251,7 @@ class Customer {
         $toCreate = $pdo->prepare($sql); // prepared statement
         $toCreate->execute(); // execute sql statment
 
-        $sql = "INSERT INTO customers_login (customerNumber, password)
+        $sql = "INSERT INTO customers (customerNumber, password)
                 VALUES '" . $this->{"customerNumber"} . "', '" . $this->{"password"} . "'"; // sql statementS
 
         $toCreate = $pdo->prepare($sql); // prepared statement
@@ -260,7 +292,7 @@ class Customer {
         
         $pdo = connect_admin();
 
-        $sql = "UPDATE customers_login
+        $sql = "UPDATE customers
                 SET password = '" . $this->{"password"} . "'
                 WHERE customerNumber = '" . $this->{"customerNumber"} . "'"; // sql statementS
 
@@ -274,7 +306,7 @@ class Customer {
         
         $pdo = connect_admin();
 
-        $sql = "SELECT password FROM customers_login
+        $sql = "SELECT password FROM customers
                 WHERE customerNumber = '" . $this->{"customerNumber"} . "'"; // sql statementS
 
         $toGet = $pdo->prepare($sql); // prepared statement

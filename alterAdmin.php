@@ -1,3 +1,8 @@
+<?php  $session_test = session_start();
+        if(!$session_test) {
+            echo "Session har inte startat";
+        }
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,10 +10,9 @@
     include_once "classes.php";
     // check that you are logged in otherwise reroute to login page
 
-    if(!isset($_COOKIE['administrator'])) {
-                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
+    if(!(isset($_SESSION['administrator']))) {
+        echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
     }
-    
     // create an admin object and an error message variable just in case
 
     $adminObject = new Administrator;
@@ -21,42 +25,34 @@
         $adminLastName = filter_input(INPUT_POST, 'adminLastName', FILTER_SANITIZE_MAGIC_QUOTES);
         $adminFirstName = filter_input(INPUT_POST, 'adminFirstName', FILTER_SANITIZE_MAGIC_QUOTES);
 
-        $adminObject->adminID = $adminID;
-        $adminObject->adminLastName = $adminLastName;
-        $adminObject->adminFirstName = $adminFirstName;
+        $adminObject->ID = $adminID;
+        $adminObject->LastName = $adminLastName;
+        $adminObject->FirstName = $adminFirstName;
         $return = $adminObject->update_admin();
+
         if($return){
-        echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=administrators\'">';
+            echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=administrators\'">';
         }
     }
 
     if(isset($_POST['savePassword'])){
         $adminID = filter_input(INPUT_POST, 'adminID', FILTER_SANITIZE_MAGIC_QUOTES);
-        $oldPassword = filter_input(INPUT_POST, 'oldPassword', FILTER_SANITIZE_MAGIC_QUOTES);
         $newPassword = filter_input(INPUT_POST, 'newPassword', FILTER_SANITIZE_MAGIC_QUOTES);
-        $repeatNewPassword = filter_input(INPUT_POST, 'repeatNewPassword', FILTER_SANITIZE_MAGIC_QUOTES);
-        
-        $adminObject->adminID = $adminID;
+
+        $adminObject->ID = $adminID;
         //password checks
-        $checkPassword = $adminObject->get_password();
+        $checkPasswordGet = $adminObject->get_admin();
+        $checkPassword = $checkPasswordGet->fetch();
+        $databasePassword = $checkPassword['password'];
 
-        //check that the new password is the same as the repeated one
-        if($newPassword==$repeatNewPassword) {
-            $err_message = "New password doesnt match the repeated New Password";
-
-        // check that the new password the same as the old password
-        } elseif($newPassword == $checkPassword) {
-            $err_message = "Password is already set.";
-
-        //check that it isnt too short
-        } elseif (strlen($newPassword)<8){
-            $err_message = "Password too short.";
-
+        if(($databasePassword == $newPassword)) {
+            $err_message = "Lösenordet är redan satt.";
         } else {
-            $adminObject->adminPassword = $newPassword;
+            $passwordHashed = password_hash($newPassword, PASSWORD_DEFAULT);
+            $adminObject->password = $passwordHashed;
             $return = $adminObject->change_password();
-            if($return) {
-            //toggle the overlay
+            if(!$return) {
+                $err_message = "Kunde inte spara lösenordet. Kontakta IT supporten";
             }
         }
     }
@@ -64,7 +60,7 @@
     ?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>Ändra Administratör</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="admin.css">
     <script src="admin.js"></script>
@@ -77,73 +73,61 @@
         //fetch the admin to alter from post
         // check if it is from the list
         if(isset($_POST['number'])) {
-        $adminID = filter_input(INPUT_POST, 'number', FILTER_SANITIZE_NUMBER_INT);
+            $adminID = filter_input(INPUT_POST, 'number', FILTER_SANITIZE_NUMBER_INT);
 
-        $adminObject->adminID = $adminID;
-        $result = $adminObject->get_admin();
-        $row = $result->fetch();
-        } else {
-            $row = array("adminID" => $_POST['adminID'],
-                    "adminLastName" => $_POST['adminLastName'],
-                    "adminFirstName" => $_POST['adminFirstName'],
-                    "contactFirstName" => $_POST['contactFirstName'],
-                    "phone" => $_POST['phone'],
-                    "addressLine1" => $_POST['addressLine1'],
-                    "addressLine2" => $_POST['addressLine2'],
-                    "city" => $_POST['city'],
-                    "state" => $_POST['state'],
-                    "postalCode" => $_POST['postalCode'],
-                    "country" => $_POST['country'],
-                    "salesRepEmployeeNumber" => $_POST['salesRepEmployeeNumber'],
-                    "creditLimit" => $_POST['creditLimit']
-            );
+            $adminObject->ID = $adminID;
+            $result = $adminObject->get_admin();
+            $row = $result->fetch();
+        } if (isset($_POST['adminID'])) { 
+            $adminID = filter_input(INPUT_POST, 'adminID', FILTER_SANITIZE_NUMBER_INT);
+            $adminObject->ID = $adminID;
+            $result = $adminObject->get_admin();
+            $row = $result->fetch();
         }
+
         ?>
+            <div><?php echo $err_message; ?></div>
             <table>
         <form action="alterAdmin.php" method="post">
                 <tr>
                     <td>Admin ID
                     </td>
                     <td>
-                        <input type="hidden" name="adminID" value="<?php echo $row['adminID']; ?>">
-                        <input type="text" value="<?php echo $row['adminID']; ?>" disabled>
+                        <input type="hidden" name="adminID" value="<?php echo $row['ID']; ?>">
+                        <input type="hidden" name="number" value="<?php echo $row['ID']; ?>">
+                        <input type="text" value="<?php echo $row['ID']; ?>" disabled>
                     </td>
                 </tr>
                 <tr>
                     <td>Efternamn
                     </td>
-                    <td><input type="text" name="adminLastName" value="<?php echo $row['adminLastName']; ?>">
+                    <td><input type="text" name="adminLastName" value="<?php echo $row['LastName']; ?>">
                     </td>
                 </tr>
                 <tr>
                     <td>Förnamn
                     </td>
-                    <td><input type="text" name="adminFirstName" value="<?php echo $row['adminFirstName']; ?>">
+                    <td><input type="text" name="adminFirstName" value="<?php echo $row['FirstName']; ?>">
                     </td>
                 </tr>
                 <tr>
                     <td>Lösenord
                     </td>
                     <td>
-                        <input type="hidden" name="password" value="<?php
-                            $length = strlen($row['password']);
-                            echo  str_repeat("*", $length); ?>">
                         <?php
-                            $length = strlen($row['password']);
+                            $length = 8;
                             echo  str_repeat("*", $length);
                         ?>
                     </td>
                 </tr>
-        </form>
                 <tr>
-                    <td>
-                        <button id="changePasswordButton">Ändra lösenord</button>
-                    </td>
-                <form action="alterAdmin.php" method="post">
                     <td>
                         <input type="submit" name="saveAdmin" value="Spara">
                     </td>
-                </form>
+        </form>
+                    <td>
+                        <button id="changePasswordButton">Ändra lösenord</button>
+                    </td>
                 </tr>
             </table>
 
@@ -159,8 +143,6 @@
 
                                 if($err_message = ""){
                                     echo "Ändra lösenord nedan";
-                                } else {
-                                    echo $err_message;
                                 }
 
                                 ?>
@@ -186,16 +168,16 @@
                             <td><input type="text" name="repeatNewPassword">
                             </td>
                         </tr>
-                </form>
                         <tr>
                             <td>
-                                <button id="cancelPasswordButton">Ångra</button>
-                            </td>
-                <form action="alterAdmin.php" method="post">
-                            <td>
+                        <input type="hidden" name="adminID" value="<?php echo $row['ID']; ?>">
+                        <input type="hidden" name="number" value="<?php echo $row['ID']; ?>">
                                 <input type="submit" id="savePasswordButton" name="savePassword" value="Spara Lösenord">
                             </td>
                 </form>
+                            <td>
+                                <button id="cancelPasswordButton">Ångra</button>
+                            </td>
                         </tr>
                     </table>
             </div>    

@@ -1,3 +1,8 @@
+<?php  $session_test = session_start();
+        if(!$session_test) {
+            echo "Session har inte startat.";
+        }
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,57 +10,29 @@
     include_once "classes.php";
     // check that you are logged in otherwise reroute to login page
 
-    if(!isset($_COOKIE['administrator'])) {
-                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
+    if(!(isset($_SESSION['administrator']))) {
+        echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
     }
+
     // create a customer object and an error message variable just in case
 
     $customerObject = new Customer;
     $err_message = "";
 
-    // check if the customer has been saved
+    // check if the customer is to be deleted
 
-    if(isset($_POST['saveCustomer'])){
-        $customerNumber = filter_input(INPUT_POST, 'customerNumber', FILTER_SANITIZE_MAGIC_QUOTES);
-        
-        $customerObject->customerNumber = $customerNumber;
-        $customerObject->delete_customer();
-        echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=customers\'">';
+    if(isset($_POST['deleteCustomer'])) {
+            $customerNumber = filter_input(INPUT_POST, 'customerNumber', FILTER_SANITIZE_MAGIC_QUOTES);
+
+            $customerObject->customerNumber = $customerNumber;
+            $test = $customerObject->delete_customer();
+
     }
 
-    if(isset($_POST['changePassword'])) {
-        $customerNumber = filter_input(INPUT_POST, 'customerNumber', FILTER_SANITIZE_MAGIC_QUOTES);
-        $oldPassword = filter_input(INPUT_POST, 'oldPassword', FILTER_SANITIZE_MAGIC_QUOTES);
-        $newPassword = filter_input(INPUT_POST, 'newPassword', FILTER_SANITIZE_MAGIC_QUOTES);
-        $repeatNewPassword = filter_input(INPUT_POST, 'repeatNewPassword', FILTER_SANITIZE_MAGIC_QUOTES);
-
-        $customerObject->customerNumber = $customerNumber;
-
-        //password checks
-        $checkPassword = $customerObject->get_password();
-
-        //check that the new password is the same as the repeated one
-        if($newPassword==$repeatNewPassword) {
-            $err_message = "New password doesnt match the repeated New Password";
-
-        // check that the new password the same as the old password
-        } elseif($newPassword == $checkPassword) {
-            $err_message = "Password is already set.";
-
-        //check that it isnt too short
-        } elseif (strlen($newPassword)<8){
-            $err_message = "Password too short.";
-
-        } else {
-            $customerObject->password = $newPassword;
-            $customerObject->change_password();
-            //toggle the overlay
-        }
-    }
     ?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>Ta bort Kund</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="admin.css">
     <script src="admin.js"></script>

@@ -32,7 +32,7 @@ function productline_names($pdo) {
 
 function max_admin_id($pdo) {
 
-     $sql = "SELECT max(adminID) FROM admins";
+     $sql = "SELECT max(ID) FROM adminLogin";
 
      $toGet = $pdo->prepare($sql); // prepared statement
      $toGet->execute(); // execute sql statment
@@ -43,7 +43,7 @@ function max_admin_id($pdo) {
 
 function min_admin_id($pdo) {
 
-     $sql = "SELECT min(adminID) FROM admins";
+     $sql = "SELECT min(ID) FROM adminLogin";
 
      $toGet = $pdo->prepare($sql); // prepared statement
      $toGet->execute(); // execute sql statment
@@ -144,33 +144,14 @@ function get_all_customers($pdo, $limit, $offset) {
 function get_all_admins($pdo, $limit, $offset) {
      $sql = "";
      if($offset>0){
-     $sql = "SELECT * FROM admins LIMIT $offset, $limit";
+     $sql = "SELECT * FROM adminLogin LIMIT $offset, $limit";
      } else {
-     $sql = "SELECT * FROM customers LIMIT $limit";
+     $sql = "SELECT * FROM adminLogin LIMIT $limit";
      }
      $toGet = $pdo->prepare($sql); // prepared statement
      $toGet->execute(); // execute sql statment
 
      return $toGet;
-}
-
-function check_admin_login($loginName, $password) {
-
-     $pdo = connect_admin();
-     $sql = "SELECT * FROM admins WHERE adminID = $adminID";
-     $toGet = $pdo->prepare($sql); // prepared statement
-     $toGet->execute(); // execute sql statment
-     $result = $toGet->fetch();
-     if(isset($result['adminID'])) {
-          if($result['password'] == $password) {
-               return $toGet;
-          } else {
-               return "Wrong password";
-          }
-     } else {
-          return "No such user";
-     }
-
 }
 
 ?>

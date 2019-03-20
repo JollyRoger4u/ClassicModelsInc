@@ -1,3 +1,8 @@
+<?php  $session_test = session_start();
+        if(!$session_test) {
+            echo "Session har inte startat.";
+        }
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,8 +10,8 @@
     include_once "classes.php";
     // check that you are logged in otherwise reroute to login page
 
-    if(!isset($_COOKIE['administrator'])) {
-                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
+    if(!(isset($_SESSION['administrator']))) {
+        echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
     }
 
     // create a product object
@@ -24,14 +29,14 @@
         $productID = "$old_code[0]" . "_" . "$new_code"; //splice the old start, the devider and the new code together for a new product code to save in
 
         $productName = filter_input(INPUT_POST, 'productName', FILTER_SANITIZE_MAGIC_QUOTES);
-        $productLine = filter_input(INPUT_POST, 'productLine', FILTER_SANITIZE_SPECIAL_CHARS);
-        $productScale = filter_input(INPUT_POST, 'productScale', FILTER_SANITIZE_SPECIAL_CHARS);
-        $productVendor = filter_input(INPUT_POST, 'productVendor', FILTER_SANITIZE_SPECIAL_CHARS);
-        $productDescription = filter_input(INPUT_POST, 'productDescription', FILTER_SANITIZE_SPECIAL_CHARS);
-        $quantityInStock = filter_input(INPUT_POST, 'quantityInStock', FILTER_SANITIZE_SPECIAL_CHARS);
-        $buyPrice = filter_input(INPUT_POST, 'buyPrice', FILTER_SANITIZE_SPECIAL_CHARS);
-        $MSRP = filter_input(INPUT_POST, 'MSRP', FILTER_SANITIZE_SPECIAL_CHARS);
-        
+        $productLine = filter_input(INPUT_POST, 'productLine', FILTER_SANITIZE_MAGIC_QUOTES);
+        $productScale = filter_input(INPUT_POST, 'productScale', FILTER_SANITIZE_MAGIC_QUOTES);
+        $productVendor = filter_input(INPUT_POST, 'productVendor', FILTER_SANITIZE_MAGIC_QUOTES);
+        $productDescription = filter_input(INPUT_POST, 'productDescription', FILTER_SANITIZE_MAGIC_QUOTES);
+        $quantityInStock = filter_input(INPUT_POST, 'quantityInStock', FILTER_SANITIZE_MAGIC_QUOTES);
+        $buyPrice = filter_input(INPUT_POST, 'buyPrice', FILTER_SANITIZE_MAGIC_QUOTES);
+        $MSRP = filter_input(INPUT_POST, 'MSRP', FILTER_SANITIZE_MAGIC_QUOTES);
+        $productImage = filter_input(INPUT_POST, 'productImage', FILTER_SANITIZE_MAGIC_QUOTES);
         
         $productObject->productCode = $productID;
         $productObject->productName = $productName;
@@ -42,17 +47,18 @@
         $productObject->quantityInStock = $quantityInStock;
         $productObject->buyPrice = $buyPrice;
         $productObject->MSRP = $MSRP;
+        $productObject->productImage = $productImage;
         
         $testResult =  $productObject->get_product();
 
         if($test = $testResult->fetch()){
-            $err_message = "There is already an object with this productCode";
+            $err_message = "Det finns redan en produkt med denna produktkod.";
         } else {
             $test = $productObject->create_product();
             if($test) {
                 echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=products\'">';
             } else {
-                $err_message = "Something is wrong in the save function, contact support.";
+                $err_message = "Något är fel i sparfunktionen. Kontakta IT supporten.";
             }
         }
     }
@@ -60,7 +66,7 @@
     ?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>Skapa Ny Produkt</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="admin.css">
     <script src="admin.js"></script>
@@ -122,6 +128,10 @@
                     <tr>
                         <td>Rekomenderat försäljningspris</td>
                         <td><input type="text" name="MSRP"></td>
+                    </tr>
+                    <tr>
+                        <td>Bildens sökväg</td>
+                        <td><input type="text" name="productImage" value="<?php echo $row['productImage']; ?>"></td>
                     </tr>
                     <tr>
                         <td></td>
