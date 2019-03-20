@@ -1,51 +1,72 @@
 <?php 
-require_once "functions.php";
 require_once "classes.php";
-
-
+$cart = [];
+$i = 0;
+$productid = ['productCode'] ;
 $test = new Product;
-$test->productCode = $_GET['product'];
-$result = $test->get_product();
-?>
-<!DOCTYPE html>
-<html>
-    <head>
-        <script type="text/javascript" src="js.js"></script>
-        <link rel="stylesheet" type="text/css" href="style.css">
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css" integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+if(isset($_COOKIE["cart"])) {
+    $cart = unserialize($_COOKIE["cart"]) ;
+}
+if (isset($_POST['buy'])) {
+    echo "Varan tillagd i korg";
+    foreach($cart as $key=>$value) {
+        if($value["id"] == $_POST['productid']) {
+            $newnumberofitems = (int) $_POST['noOfProducts'];
+            $cart[$i]['noOfItems'] += $newnumberofitems;
+            
+            setcookie("cart", serialize($cart), time()+3500);
+        } else {
+            $cart_item = [
+                'id' => $_POST['productid'],
+                'noOfItems' => $_POST['noOfProducts']
+            ]; 
+            array_push($cart, $cart_item);
+            
+            setcookie("cart", serialize($cart), time()+3500);
+        }
+        $i++;
+    }
+    if(empty($cart)){
+        $cart_item = [
+            'id' => $_POST['productid'],
+            'noOfItems' => $_POST['noOfProducts']
+        ]; 
+        array_push($cart, $cart_item);
+        
+        setcookie("cart", serialize($cart), time()+3500);
+    }
+}
+include_once "header.php" ?>
 
-
-    </head>
-
-    <?php include_once "header.php" ?>
-
-
-
-        <main>
+  <main>
         <?php
-while ($row = $result->fetch()) {
+        if(isset($_GET['product'])) {
+            $test->productCode = $_GET['product'];
+        } else {
+            $test->productCode = $_POST['productid'];
+        }
+        $result = $test->get_product();
+        while ($row = $result->fetch()) {
     ?>
-        <article>          
-        <section class="gallery">
-<img src="<?php echo $row['productImage']; ?>">
-        </section>
-        <section class="product-details">
-            <h2><?php echo $row['productName']; ?></h2>
-                <p><?php echo $row['productDescription']; ?></p>
-               <h3><?php echo $row['MSRP']; ?>kr</h3>
-               <div class="button_group">
-	<button onclick="subtract()" id="subtract">- </button><div id="counter">0</div>
-	<button onclick="add()" id="add">+</button>
-</div>
-               <input type="submit" value="Lägg i varukorg">
-        </section>
+        <article> 
+        <a href="shop.php">Tillbaka till shoppen</a> 
+            <form method="post" action="productside.php">        
+        <div class="gallery">
+    <img src="<?php echo $row['productImage']; ?>">
+        </div>
+    <div class="product-details">
+    <h2><?php echo $row['productName']; ?></h2>
+    <p><?php echo $row['productDescription']; ?></p>
+    <p><?php echo $row['MSRP'] ?></p>
+    <input type ="hidden" name="productid" value="<?php echo $row['productCode'] ?>">
+    <input type="number" name="noOfProducts" value="1" min="1">
+    <input type="submit" name="buy" value="Lägg till i korgen">
+<a href="varukorg.php">Till varukorgen</a>
+        </div>
 <?php } ?>     
 
+</form>
     </article>
         </main>
         <?php include_once "footer.php" ?>
 </html>
-        
-   

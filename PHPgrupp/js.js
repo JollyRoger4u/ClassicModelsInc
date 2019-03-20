@@ -12,5 +12,5 @@ function add(){
 
 function reset(){
   counter = 0;
-  document.getElementById("counter").innerHTML = counter;
+  document.getElementsById("counter").innerHTML = counter;
 }
