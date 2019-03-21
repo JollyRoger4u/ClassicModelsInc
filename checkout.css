@@ -1,0 +1,260 @@
+.hidden {
+    display:none;
+}
+
+header, main {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+}
+
+nav ul li {
+    font-size: 2em;
+    background-color: rgb(209, 209, 209);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+nav ul li a {
+    color: black;
+    text-decoration: none;
+}
+
+nav ul li a:hover {
+    color: rgb(73, 73, 73);
+}
+
+nav ul li a:visited, nav ul li a:active{
+    color: black;   
+}
+
+.pageThrough {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.pageThrough div{
+    margin-left: 40px;
+    margin-right:40px;
+}
+
+.pageThrough button {
+    background: none;
+    border: none;
+    font-size: 2em;
+}
+
+.tables {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#overlay_center {
+    display: none;
+}
+
+#overlay_center.visible {
+    display:block;
+}
+
+.fixedTable {
+    margin-top: 20px;
+    table-layout: fixed;
+    border: 1px solid black;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.fixedTable th {
+    background-color: rgb(192, 192, 192);
+    padding: 5px;
+    border: 1px solid black;
+}
+
+.fixedTable td {
+    border: 1px solid black;
+}
+
+.tdfixed {
+    max-width: 300px;
+}
+
+.centering {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkoutTable {
+    width: 800px;
+}
+
+.checkoutDetails {
+    table-layout: fixed;
+    border: 1px solid black;
+    border-collapse: collapse;
+    width: 800px;
+}
+
+.checkoutDetails th {
+    border: 1px solid black;
+}
+
+.checkoutDetails th:first-child {
+    border-right: none;
+}
+
+.checkoutDetails th:nth-child(2) {
+    border-left: none;
+}
+
+.checkoutDetails td {
+    border: 1px solid black;
+}
+
+.checkoutDetails td:first-child {
+    border-right: none;
+}
+
+.checkoutDetails td:nth-child(2) {
+    border-left: none;
+}
+
+.checkoutDetails tr:nth-last-child(-n+3) td {
+    border: none;
+}
+
+.detailPic{
+    width: 75px;
+}
+
+.detailDesciption {
+    width: 400px;
+}
+
+.detailPrice {
+    width: 50px;
+}
+
+.detailAmount {
+    width: 75px;
+}
+
+.amount {
+    width: 20px;
+}
+
+.detailTotal {
+    width: 50px;
+}
+
+.detailTotal2 {
+    width: 50px;
+    text-align: right;
+}
+
+.checkoutTable th:last-child {
+    width: 25px;
+}
+
+.checkoutBottomThree {
+    text-align: right;
+}
+
+.sidebyside {
+    margin-top: 25px;
+    width: 800px;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.deliveryTop {
+    align-items: start;
+}
+
+.deliveryChoice {
+    list-style: none;
+    width: 300px;
+}
+
+.deliveryItemChoice {
+    border: 2px solid rgb(48, 255, 21);
+    border-radius: 25px;
+    margin-bottom: 5px;
+}
+
+.deliveryItemChoice:hover {
+    background-color: rgb(48, 255, 21);
+}
+
+.deliveryButtons {
+    background: none;
+    border: none;
+    width: 300px;
+}
+
+.backgroundChosen {
+    background-color: rgb(48, 255, 21);
+}
+
+.backgroundNotChosen {
+    background-color: #FFFFFF;
+}
+
+.name {
+    width: 30px;
+}
+
+.customerInfoOuterDiv {
+    display: flex;
+    width: 400px;
+    flex-wrap: nowrap;
+    justify-content: center;
+    padding-bottom: 5px;
+}
+
+.customerInfo1 {
+    display: inline-block;
+    width: 150px;
+}
+
+.customerInfo2 {
+    display: inline-block;
+    width: 200px;
+}
+
+.customerInfoOuterDiv:last-child {
+    justify-content: flex-end;
+    margin-right: 20px;
+}
+
+.customerInfo {
+    display: inline-block;
+}
+
+.customerInfoButton {
+    background-color: #08092B;
+    color: #FFFFFF;
+    padding: 5px;
+    border-radius: 25px;
+    border: none;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.customerInfoButton:hover {
+    border: 2px solid rgb(38, 41, 119);
+    transform: scale(1.05,1.05); 
+}
