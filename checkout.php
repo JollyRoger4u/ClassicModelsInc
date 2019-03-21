@@ -1,11 +1,10 @@
-<head>
 <?php
 
     include_once 'classes.php';
     // check that you are logged in otherwise reroute to login page
 
-    if(!isset($_SESSION['currentUser'])) {
-                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'login.php\'">';
+    if(!isset($_SESSION['sessionID']) || $_SESSION['sessionID'] == "999") {
+            echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'login.php\'">';
     }
 
     // initilisation values
@@ -18,11 +17,23 @@
     $numberOfDetails = 0; //the amount of each product
     $numberOfItems = 0; // the total amount of product types
     $row = array(); // array to use for the fetched data from the database
-    
+
+    if(isset($_POST['ups'])){
+        $deliveryCost = "200";
+        setcookie('deliveryCost', $deliveryCost, time() + 60 * 60, "/");
+    } elseif(isset($_POST['schenker'])){
+        $deliveryCost = "100";
+        setcookie('deliveryCost', $deliveryCost, time() + 60 * 60, "/");
+    } elseif(isset($_POST['postnord'])){
+        $deliveryCost = "20";
+        setcookie('deliveryCost', $deliveryCost, time() + 60 * 60, "/");
+    } else {
+        setcookie('deliveryCost', $deliveryCost, time() + 60 * 60, "/");
+    }
+
     if(isset($_POST['submit']) && isset($_POST['numberOfItemsHidden'])) {
     setcookie('order', 1, time() + 10, "/");
     setcookie('customerNumber', $_POST['customerNumber'], time() + 1 * 60, "/");
-
     $numberOfItems = $_POST['numberOfItemsHidden'];
     setcookie('numberOfItemsHidden', $numberOfItems, time() + 1 * 60, "/");
     
@@ -47,15 +58,7 @@
     } else {
 
 ?>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Kassa</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="checkout.css">
-    <script src="checkout.js"></script>
-</head>
-
-<?php include_once "Header.html"; ?>
+<?php include_once "header.html"; ?>
 
 <body>
     
@@ -82,10 +85,6 @@
                     </thead>
                     <tbody>
                         <?php // get the products and list one line for each dont forget to set the sums
-                            
-                            if(isset($_COOKIE['deliveryCost'])){
-                                $deliveryCost = $_COOKIE['deliveryCost'];
-                            }
 
                             if(!isset($_COOKIE['delete'])) {
                             
@@ -200,15 +199,15 @@
                     <ul class="deliveryChoice">
                             <li id="postnord" class="deliveryItemChoice backgroundChosen">
                                 <input name="postnord" type="hidden" value="postnord">
-                                <button id="postnordButton" class="deliveryButtons" onclick="return changeDeliveryChoicePostnordButton()">Postnord</button>
+                                <button name="postnord" id="postnordButton" class="deliveryButtons" onclick="return changeDeliveryChoicePostnordButton()">Postnord</button>
                             </li>
                             <li id="ups" class="deliveryItemChoice">
                                 <input name="ups" type="hidden" value="ups">
-                                <button id="upsButton" class="deliveryButtons" onclick="return changeDeliveryChoiceUPSButton()">UPS</button>
+                                <button name="ups" id="upsButton" class="deliveryButtons" onclick="return changeDeliveryChoiceUPSButton()">UPS</button>
                             </li>
                             <li id="schenker" class="deliveryItemChoice">
                                 <input name="schenker" type="hidden" value="schenker">
-                                <button id="schenkerButton" class="deliveryButtons" onclick="return changeDeliveryChoiceSchenkerButton()">Schenker</button>
+                                <button name="schenker" id="schenkerButton" class="deliveryButtons" onclick="return changeDeliveryChoiceSchenkerButton()">Schenker</button>
                             </li>
                     </ul>
                 </div>

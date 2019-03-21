@@ -1,12 +1,6 @@
 <?php
 
     include_once 'classes.php';
-    // check that you are logged in otherwise reroute to login page
-
-    if(!isset($_SESSION['currentUser'])) {
-                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'login.php\'">';
-    }
-
 
     // initilisation values
     if(isset($_COOKIE['order']) && $_COOKIE['order'] == 1) {

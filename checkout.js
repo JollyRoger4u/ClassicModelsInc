@@ -53,8 +53,8 @@ function changeDeliveryChoiceSchenkerButton() {
 }
 
 function changeDeliveryChoiceUPSButton() {
-    var schenker = document.getElementById("ups").classList.contains("backgroundChosen");
-    if (schenker) {
+    var ups = document.getElementById("ups").classList.contains("backgroundChosen");
+    if (ups) {
     } else {
         document.getElementById("ups").classList.add("backgroundChosen");
         document.getElementById("ups").classList.remove("backgroundNotChosen");
@@ -83,8 +83,8 @@ function changeDeliveryChoiceUPSButton() {
 }
 
 function changeDeliveryChoicePostnordButton() {
-    var schenker = document.getElementById("postnord").classList.contains("backgroundChosen");
-    if (schenker) {
+    var postnord = document.getElementById("postnord").classList.contains("backgroundChosen");
+    if (postnord) {
     } else {
         document.getElementById("postnord").classList.add("backgroundChosen");
         document.getElementById("postnord").classList.remove("backgroundNotChosen");
