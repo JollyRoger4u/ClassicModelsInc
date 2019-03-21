@@ -116,7 +116,7 @@
                         ?>
                         
                     <tr>
-                        <td class="detailPic"><?php echo $row['image']; ?>
+                        <td class="detailPic"><img src="<?php echo $row['productImage']; ?>">
                         </td>
                         <td class="detailDesciption"><?php echo $row['productDescription']; ?>
                         </td>

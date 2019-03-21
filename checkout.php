@@ -141,7 +141,7 @@
                             ?>
                             
                         <tr id="<?php echo "detailRow" . $i; ?>">
-                            <td class="detailPic"><?php echo $row['image']; ?><input type="hidden" name="<?php echo "detailPic" . "$i"; ?>" value="<?php  echo $row['image']; ?>">
+                            <td class="detailPic"><img src="<?php echo $row['productImage']; ?>"><input type="hidden" name="<?php echo "detailPic" . "$i"; ?>" value="<?php  echo $row['productImage']; ?>">
                             </td>
                             <td class="detailDesciption"><?php echo $row['productDescription']; ?><input type="hidden" name="<?php echo "detailDescription" . "$i"; ?>" value="<?php echo $row['productDescription']; ?>">
                             </td>
