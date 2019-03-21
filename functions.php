@@ -2,10 +2,10 @@
 
 function connect_admin() {
     /* Establish a connection to the database */
-     $host = 'localhost';
-     $db   = 'classicmodels';
-     $user = 'root';
-     $pass = '';
+     $host = 'my18b.sqlserver.se';
+     $db   = '236979-classicmodels';
+     $user = '236979_mf39994';
+     $pass = 'kalas12345';
      $charset = 'utf8mb4';
 
      $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
