@@ -4,7 +4,7 @@
     display:none;
 }
 
-header, main {
+header, main, .loginForm {
     display: flex;
     width: 100%;
     align-items: center;
@@ -105,6 +105,13 @@ nav ul li a:visited, nav ul li a:active{
 
 .tdfixed {
     max-width: 300px;
+    height: 20px;
+}
+
+.dontJump {
+    max-width: 300px;
+    height: 20px;
+    overflow: hidden;
 }
 
 .centering {
@@ -164,4 +171,8 @@ nav ul li a:visited, nav ul li a:active{
 
 .detailDelete {
     width: 10px;
+}
+
+.loginForm form {
+    
 }

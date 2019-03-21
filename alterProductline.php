@@ -1,3 +1,8 @@
+<?php  $session_test = session_start();
+        if(!$session_test) {
+            echo "Session har inte startat.";
+        }
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,9 +10,9 @@
     include_once "classes.php";
     // check that you are logged in otherwise reroute to login page
 
-    /*if(!isset($_COOKIE['administrator'])) {
-                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php\'">';
-    }*/ //enable when tables are complete
+    if(!(isset($_SESSION['administrator']))) {
+        echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
+    }
     
     // create a productline object
 
@@ -25,54 +30,16 @@
         $productLineObject->htmlDescription = $htmlDescription;
         $productLineObject->update_productline();
 
-        if(isset($_FILES["fileToUpload"])) {
-
-            if(is_uploaded_file($_FILES["fileToUpload"]["tmp_name"]) ) {
-                $target_file = basename($_FILES["fileToUpload"]["name"]);
-                $uploadOk = 1;
-                $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-                
-                // Check if image file is a actual image or fake image
-                
-                if(isset($_POST["submit"])) {
-                
-                    $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
-                
-                    if($check !== false) {
-                        $uploadOk = 1;
-                    } else {
-                        echo "File is not an image.";
-                        $uploadOk = 0;
-                    }
-                }
-                
-                // check that it has the right type
-                
-                if($imageFileType != "jpg" && $imageFileType != "png" &&
-                $imageFileType != "jpeg"
-                && $imageFileType != "gif" ) {
-                    echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-                    $uploadOk = 0;
-                } 
-
-                // upload if it passes all checks
-                if($uploadOK==1){
-                    $image = $_FILES['fileToUpload'];
-                    $productLineObject->image = $image;
-                    $productLineObject->upload_picture();
-                }
-            }
-        }
         echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=productlines\'">';
     }
 
     ?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>Ändra kategori</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
-    <script src="main.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="admin.css">
+    <script src="admin.js"></script>
 </head>
 <body>
 <?php include_once 'headnav.php'; ?>
@@ -106,22 +73,6 @@
                         <td><input type="text" name="htmlDescription" value="<?php echo $row['htmlDescription']; ?>"><td>
                     </tr>
                     <tr>
-                        <td>Image</td>
-                        <td><img src="<?php 
-                        
-                        if($row['image']!=NULL) {
-
-                        echo $row['image'];
-                        
-                        } else {
-                            echo "#";
-                        }
-                        ?>"></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type="file" name="fileToUpload" id="fileToUpload">
-                        </td>
                         <td>
                             <input type="submit" name="productLineSave" value="Spara">
                         </td>

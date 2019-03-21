@@ -1,3 +1,8 @@
+<?php  $session_test = session_start();
+        if(!$session_test) {
+            echo "Session har inte startat.";
+        }
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,9 +10,9 @@
     include_once "classes.php";
     // check that you are logged in otherwise reroute to login page
 
-    /*if(!isset($_COOKIE['administrator'])) {
-                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php\'">';
-    }*/ //enable when tables are complete
+    if(!(isset($_SESSION['administrator']))) {
+        echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
+    }
     
     // create an admin object and an error message variable just in case
 
@@ -19,31 +24,38 @@
     if(isset($_POST['saveAdmin'])){
         $pdo = connect_admin();
         $get = max_admin_id($pdo);
-        $adminID = ($get->fetch()) + 1; 
+        $result = $get->fetch();
+        if(!$result) {
+            $err_message = "Finns inga admins.";
+        } else {
+        $adminID = ((int) $result['max(ID)']) + 1; 
 
         $adminLastName = filter_input(INPUT_POST, 'adminLastName', FILTER_SANITIZE_MAGIC_QUOTES);
         $adminFirstName = filter_input(INPUT_POST, 'adminFirstName', FILTER_SANITIZE_MAGIC_QUOTES);
+        $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_MAGIC_QUOTES);
+        $passwordHashed = password_hash($password, PASSWORD_DEFAULT);
 
-        $adminObject->adminID = $adminID;
-        $adminObject->adminLastName = $adminLastName;
-        $adminObject->adminFirstName = $adminFirstName;
+        $adminObject->ID = $adminID;
+        $adminObject->LastName = $adminLastName;
+        $adminObject->FirstName = $adminFirstName;
+        $adminObject->password = $passwordHashed;
         
         $return = $adminObject->create_admin();
         
         if($return){
             echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=administrators\'">';
         } else {
-            $err_message = "Something is wrong in the save function. Contact support.";
+            $err_message = "Något har gått fel i sparfunktionen. Kontakta IT supporten.";
         }
     }
-
+    }
     ?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>Skapa ny administratör</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
-    <script src="main.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="admin.css">
+    <script src="admin.js"></script>
 </head>
 <body>
 <?php include_once 'headnav.php'; ?>

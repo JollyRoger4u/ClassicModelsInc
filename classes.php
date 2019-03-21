@@ -6,15 +6,14 @@ class Administrator {
 
     //properties
 
-    public $adminID = 0;
-    public $password = "something";
+    public $admin = ['ID' => 0, 'password' => "something"];
 
     //methods
 
     public function get_admin() {
         $pdo = connect_admin();
 
-        $sql = "SELECT * FROM admins WHERE adminID = '". $this->adminID . "'"; // sql statement
+        $sql = "SELECT * FROM adminLogin WHERE ID = '". $this->{"ID"} . "'"; // sql statement
 
         $toGet = $pdo->prepare($sql); // prepared statement
         $toGet->execute(); // execute sql statment
@@ -25,8 +24,8 @@ class Administrator {
     public function create_admin() {
         $pdo = connect_admin();
 
-        $sql = "INSERT INTO admins (adminID, adminLastName, adminFirstName, adminPassword)
-                VALUES ('" . $this->{"adminID"} . "', '" . $this->{"adminLastName"} . "', '" . $this->{"adminFirstName"} . "', " . $this->{"adminPassword"} . "')"; // sql statement
+        $sql = "INSERT INTO adminLogin (ID, LastName, FirstName, password)
+                VALUES ('" . $this->{"ID"} . "', '" . $this->{"LastName"} . "', '" . $this->{"FirstName"} . "', '" . $this->{"password"} . "')"; // sql statement
 
         $toCreate = $pdo->prepare($sql); // prepared statement
         $return = $toCreate->execute(); // execute sql statment
@@ -37,9 +36,22 @@ class Administrator {
     public function update_admin() {
         $pdo = connect_admin();
 
-        $sql = "UPDATE admins
-                SET adminLastName = '" . $this->adminLastName . "', adminFirstName = '" . $this->adminFirstName . "', adminPassword = '" . $this->adminPassword . "'
-                WHERE adminID = '" . $this->adminID . "'"; // sql statementS
+        $sql = "UPDATE adminLogin
+                SET LastName = '" . $this->{"LastName"} . "', FirstName = '" . $this->{"FirstName"} . "'
+                WHERE ID = '" . $this->{"ID"} . "'"; // sql statementS
+
+        $toSave = $pdo->prepare($sql); // prepared statement
+        $return = $toSave->execute(); // execute sql statment
+
+        return $return;
+    }
+    
+    public function change_password() {
+        $pdo = connect_admin();
+
+        $sql = "UPDATE adminLogin
+                SET password = '" . $this->{"password"} . "' 
+                WHERE ID = '" . $this->{"ID"} . "'"; // sql statementS
 
         $toSave = $pdo->prepare($sql); // prepared statement
         $return = $toSave->execute(); // execute sql statment
@@ -50,14 +62,45 @@ class Administrator {
     public function delete_admin() {
         $pdo = connect_admin();
 
-        $sql = "DELETE FROM admins
-                WHERE adminID = '" . $this->adminID . "'"; // sql statementS
+        $sql = "DELETE FROM adminLogin
+                WHERE ID = '" . $this->{"ID"} . "'"; // sql statementS
 
         $toDelete = $pdo->prepare($sql); // prepared statement
         $return = $toDelete->execute(); // execute sql statment
 
         return $return;
     }
+
+    public function check_admin_login() {
+
+        if($this->{'ID'} != 0){
+            $pdo = connect_admin();
+            $sql = "SELECT * FROM adminLogin WHERE ID = '" . $this->{"ID"} . "'";
+            $toGet = $pdo->prepare($sql); // prepared statement
+            $toGet->execute(); // execute sql statment
+            $result = $toGet->fetch();
+
+            if($result == FALSE){
+                return "No such table";
+            } else {
+
+                $test = password_verify($this->{"password"}, $result['password']);
+
+                if(isset($result['ID'])) {
+                    if($test) {
+                        return TRUE;
+                    } else {
+                        return "Wrong password";
+                    }
+                } else {
+                    return "No such user";
+                }
+
+            }
+        } else {
+            return "No user specified";
+        }
+    }    
 }
 
 class Product {
@@ -80,7 +123,7 @@ class Product {
         $pdo = connect_admin();
 
         $sql = "SELECT * FROM products
-                WHERE productCode = '" . $this->productCode . "'"; // sql statementS
+                WHERE productCode = '" . $this->{"productCode"} . "'"; // sql statementS
 
         $toGet = $pdo->prepare($sql); // prepared statement
         $toGet->execute(); // execute sql statment
@@ -105,8 +148,8 @@ class Product {
         $pdo = connect_admin();
 
         $sql = "UPDATE products
-                SET productName = '" . $this->productName . "', productLine = '" . $this->productLine . "', productScale = '" . $this->productScale . "', productVendor = '" . $this->productVendor . "', productDescription = '" . $this->productDescription . "', quantityInStock = '" . $this->quantityInStock . "', buyPrice = '" . $this->buyPrice . "', MSRP = '" . $this->MSRP . "'
-                WHERE productCode = '" . $this->productCode . "'"; // sql statementS
+                SET productName = '" . $this->{"productName"} . "', productLine = '" . $this->{"productLine"} . "', productScale = '" . $this->{"productScale"} . "', productVendor = '" . $this->{"productVendor"} . "', productDescription = '" . $this->{"productDescription"} . "', quantityInStock = '" . $this->{"quantityInStock"} . "', buyPrice = '" . $this->{"buyPrice"} . "', MSRP = '" . $this->{"MSRP"} . "'
+                WHERE productCode = '" . $this->{"productCode"} . "'"; // sql statementS
 
         $toSave = $pdo->prepare($sql); // prepared statement
         $return = $toSave->execute(); // execute sql statment
@@ -118,7 +161,7 @@ class Product {
         $pdo = connect_admin();
 
         $sql = "DELETE FROM products
-                WHERE productCode = '" . $this->productCode . "'"; // sql statementS
+                WHERE productCode = '" . $this->{"productCode"} . "'"; // sql statementS
 
         $toDelete = $pdo->prepare($sql); // prepared statement
         $return = $toDelete->execute(); // execute sql statment
@@ -142,7 +185,7 @@ class ProductLine {
         $pdo = connect_admin();
 
         $sql = "SELECT * FROM productlines
-                WHERE productLine = '" . $this->productLine . "'"; // sql statementS
+                WHERE productLine = '" . $this->{"productLine"} . "'"; // sql statementS
 
         $toGet = $pdo->prepare($sql); // prepared statement
         $toGet->execute(); // execute sql statment
@@ -167,8 +210,8 @@ class ProductLine {
         $pdo = connect_admin();
 
         $sql = "UPDATE productLines
-                SET textDescription = '" . $this->textDescription . "', htmlDescription = '" . $this->htmlDescription . "'
-                WHERE productLine = '" . $this->productLine . "'"; // sql statementS
+                SET textDescription = '" . $this->{"textDescription"} . "', htmlDescription = '" . $this->{"htmlDescription"} . "'
+                WHERE productLine = '" . $this->{"productLine"} . "'"; // sql statementS
 
         $toSave = $pdo->prepare($sql); // prepared statement
         $return = $toSave->execute(); // execute sql statment
@@ -179,8 +222,8 @@ class ProductLine {
     public function upload_picture(){
         
         $sql = "UPDATE productLines
-                SET image = '" . $this->image . "'
-                WHERE productLine = '" . $this->productLine . "'"; // sql statementS
+                SET image = '" . $this->{"image"} . "'
+                WHERE productLine = '" . $this->{"productLine"} . "'"; // sql statementS
 
         $toSave = $pdo->prepare($sql); // prepared statement
         $return = $toSave->execute(); // execute sql statment
@@ -192,7 +235,7 @@ class ProductLine {
         $pdo = connect_admin();
 
         $sql = "DELETE FROM productLines
-                WHERE productLine = '" . $this->productLine . "'"; // sql statementS
+                WHERE productLine = '" . $this->{"productLine"} . "'"; // sql statementS
 
         $toDelete = $pdo->prepare($sql); // prepared statement
         $return = $toDelete->execute(); // execute sql statment
@@ -226,7 +269,7 @@ class Customer {
         $pdo = connect_admin();
 
         $sql = "SELECT * FROM customers
-                WHERE customerNumber = '" . $this->customerNumber . "'"; // sql statementS
+                WHERE customerNumber = '" . $this->{"customerNumber"} . "'"; // sql statementS
 
         $toGet = $pdo->prepare($sql); // prepared statement
         $toGet->execute(); // execute sql statment
@@ -244,8 +287,8 @@ class Customer {
         $toCreate = $pdo->prepare($sql); // prepared statement
         $toCreate->execute(); // execute sql statment
 
-        $sql = "INSERT INTO customers_login (customerNumber, password)
-                VALUES '" . $this->customerNumber . "', '" . $this->password . "'"; // sql statementS
+        $sql = "INSERT INTO customers (customerNumber, password)
+                VALUES '" . $this->{"customerNumber"} . "', '" . $this->{"password"} . "'"; // sql statementS
 
         $toCreate = $pdo->prepare($sql); // prepared statement
         $return = $toCreate->execute(); // execute sql statment
@@ -257,8 +300,8 @@ class Customer {
         $pdo = connect_admin();
 
         $sql = "UPDATE customers
-                SET customerName = '" . $this->customerName . "', contactLastName = '" . $this->contactLastName . "', contactFirstName = '" . $this->contactFirstName . "', phone = '" . $this->phone . "', addressLine1 = '" . $this->addressLine1 . "', addressLine2 = '" . $this->addressLine2 . "', city = '" . $this->city . "', state = '" . $this->state . "', postalCode = '" . $this->postalCode . "', salesRepEmployeeNumber = '" . $this->salesRepEmployeeNumber . "', creditLimit = '" . $this->creditLimit . "'
-                WHERE customerNumber = '" . $this->customerNumber . "'"; // sql statement
+                SET customerName = '" . $this->{"customerName"} . "', contactLastName = '" . $this->{"contactLastName"} . "', contactFirstName = '" . $this->{"contactFirstName"} . "', phone = '" . $this->{"phone"} . "', addressLine1 = '" . $this->{"addressLine1"} . "', addressLine2 = '" . $this->{"addressLine2"} . "', city = '" . $this->{"city"} . "', state = '" . $this->{"state"} . "', postalCode = '" . $this->{"postalCode"} . "', salesRepEmployeeNumber = '" . $this->{"salesRepEmployeeNumber"} . "', creditLimit = '" . $this->{"creditLimit"} . "'
+                WHERE customerNumber = '" . $this->{"customerNumber"} . "'"; // sql statement
 
         $toSave = $pdo->prepare($sql); // prepared statement
         $return = $toSave->execute(); // execute sql statment
@@ -285,9 +328,9 @@ class Customer {
         
         $pdo = connect_admin();
 
-        $sql = "UPDATE customers_login
-                SET password = '" . $this->password . "'
-                WHERE customerNumber = '" . $this->customerNumber . "'"; // sql statementS
+        $sql = "UPDATE customers
+                SET password = '" . $this->{"password"} . "'
+                WHERE customerNumber = '" . $this->{"customerNumber"} . "'"; // sql statementS
 
         $toSave = $pdo->prepare($sql); // prepared statement
         $return = $toSave->execute(); // execute sql statment
@@ -299,8 +342,8 @@ class Customer {
         
         $pdo = connect_admin();
 
-        $sql = "SELECT password FROM customers_login
-                WHERE customerNumber = '" . $this->customerNumber . "'"; // sql statementS
+        $sql = "SELECT password FROM customers
+                WHERE customerNumber = '" . $this->{"customerNumber"} . "'"; // sql statementS
 
         $toGet = $pdo->prepare($sql); // prepared statement
         $toGet->execute(); // execute sql statment
@@ -329,7 +372,7 @@ class Order {
         $pdo = connect_admin();
 
         $sql = "SELECT * FROM orders
-                WHERE orderNumber = '" . $this->orderNumber . "'"; // sql statementS
+                WHERE orderNumber = '" . $this->{"orderNumber"} . "'"; // sql statementS
 
         $toGet = $pdo->prepare($sql); // prepared statement
         $toGet->execute(); // execute sql statment
@@ -342,7 +385,7 @@ class Order {
         $pdo = connect_admin();
 
         $sql = "SELECT * FROM orders
-                WHERE customerNumber = '" . $this->customerNumber . "'"; // sql statementS
+                WHERE customerNumber = '" . $this->{"customerNumber"} . "'"; // sql statementS
 
         $toGet = $pdo->prepare($sql); // prepared statement
         $toGet->execute(); // execute sql statment
@@ -367,8 +410,8 @@ class Order {
         $pdo = connect_admin();
 
         $sql = "UPDATE orders
-                SET orderDate = '" . $this->orderDate . "', requiredDate = '" . $this->requiredDate . "', shippedDate = '" . $this->shippedDate . "', status = '" . $this->status . "', comments = '" . $this->comments . "', customerNumber = '" . $this->customerNumber . "'
-                WHERE orderNumber = '" . $this->orderNumber . "'"; // sql statementS
+                SET orderDate = '" . $this->{"orderDate"} . "', requiredDate = '" . $this->{"requiredDate"} . "', shippedDate = '" . $this->{"shippedDate"} . "', status = '" . $this->{"status"} . "', comments = '" . $this->{"comments"} . "', customerNumber = '" . $this->{"customerNumber"} . "'
+                WHERE orderNumber = '" . $this->{"orderNumber"} . "'"; // sql statementS
 
         $toSave = $pdo->prepare($sql); // prepared statement
         $return = $toSave->execute(); // execute sql statment
@@ -380,7 +423,7 @@ class Order {
         $pdo = connect_admin();
 
         $sql = "SELECT * FROM orderdetails
-                WHERE orderNumber = '" . $this->orderNumber . "'"; // sql statementS
+                WHERE orderNumber = '" . $this->{"orderNumber"} . "'"; // sql statementS
 
         $toDisplay = $pdo->prepare($sql); // prepared statement
         $toDisplay->execute(); // execute sql statment
@@ -407,7 +450,7 @@ class OrderDetail {
         $pdo = connect_admin();
 
         $sql = "SELECT * FROM orderdetails
-                WHERE orderNumber = '" . $this->orderNumber . "'"; // sql statementS
+                WHERE orderNumber = '" . $this->{"orderNumber"} . "'"; // sql statementS
 
         $toGet = $pdo->prepare($sql); // prepared statement
         $toGet->execute(); // execute sql statment
@@ -431,8 +474,8 @@ class OrderDetail {
         $pdo = connect_admin();
 
         $sql = "UPDATE orderdetails
-                SET productCode = '" . $this->productCode . "', quantityOrdered = '" . $this->quantityOrdered . "', priceEach = '" . $this->priceEach . "', orderLineNumber = '" . $this->orderLineNumber . "'
-                WHERE orderNumber = '" . $this->orderNumber . "'"; // sql statementS
+                SET productCode = '" . $this->{"productCode"} . "', quantityOrdered = '" . $this->{"quantityOrdered"} . "', priceEach = '" . $this->{"priceEach"} . "', orderLineNumber = '" . $this->{"orderLineNumber"} . "'
+                WHERE orderNumber = '" . $this->{"orderNumber"} . "'"; // sql statementS
 
         $toSave = $pdo->prepare($sql); // prepared statement
         $return = $toSave->execute(); // execute sql statment

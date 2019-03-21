@@ -32,7 +32,18 @@ function productline_names($pdo) {
 
 function max_admin_id($pdo) {
 
-     $sql = "SELECT max(adminID) FROM admins";
+     $sql = "SELECT max(ID) FROM adminLogin";
+
+     $toGet = $pdo->prepare($sql); // prepared statement
+     $toGet->execute(); // execute sql statment
+
+     return $toGet;
+
+}
+
+function min_admin_id($pdo) {
+
+     $sql = "SELECT min(ID) FROM adminLogin";
 
      $toGet = $pdo->prepare($sql); // prepared statement
      $toGet->execute(); // execute sql statment
@@ -63,6 +74,17 @@ function max_productCode($pdo) {
 
 }
 function max_order_id($pdo) {
+
+     $sql = "SELECT max(orderNumber) FROM orders";
+
+     $toGet = $pdo->prepare($sql); // prepared statement
+     $toGet->execute(); // execute sql statment
+
+     return $toGet;
+
+}
+
+function max_orderNumber($pdo) {
 
      $sql = "SELECT max(orderNumber) FROM orders";
 
@@ -132,9 +154,9 @@ function get_all_customers($pdo, $limit, $offset) {
 function get_all_admins($pdo, $limit, $offset) {
      $sql = "";
      if($offset>0){
-     $sql = "SELECT * FROM admins LIMIT $offset, $limit";
+     $sql = "SELECT * FROM adminLogin LIMIT $offset, $limit";
      } else {
-     $sql = "SELECT * FROM customers LIMIT $limit";
+     $sql = "SELECT * FROM adminLogin LIMIT $limit";
      }
      $toGet = $pdo->prepare($sql); // prepared statement
      $toGet->execute(); // execute sql statment

@@ -1,71 +1,51 @@
+<?php  
+$test = session_start(); ?>
 <!DOCTYPE html>
 <html>
 <head>
 <?php
 
-    if(isset($_POST['login'])) {
+    require_once "classes.php";
     // a couple of variable to keep track of if the login attempt failed.
 
-    $wrongpassword = 0;
-    $wrongID = 0;
+    $err_message = "";
+    $adminObject = new Administrator;
+
+    if(isset($_POST['login'])) {
 
     // get and sanitize input
 
-    $adminID = filter_input(INPUT_GET, 'admin', FILTER_SANITIZE_NUMBER_INT);
-    $password = filter_input(INPUT_GET, 'password', FILTER_SANITIZE_MAGIC_QUOTES);
-    
+    $adminID = filter_input(INPUT_POST, 'adminID', FILTER_SANITIZE_NUMBER_INT);
+    $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_MAGIC_QUOTES);
+    $adminObject->ID = $adminID;
+    $adminObject->password = $password;
+
     // connect to database
-
-    $pdo = connect_login();
-
-    // select the admin with that id
-
-    $sql = "SELECT * FROM admins WHERE adminID = $adminID";
-
-    $toDisplay = $pdo->prepare($sql); // prepared statement
-    $toDisplay->execute(); // execute sql statment
-    $result = $toDisplay->fetch();
-    if($result != NULL){
-        if($result['password'] == $password){
-            //set cookie and redirect
-            setcookie("administrator", $adminID]);
-            echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=start\'">';
+    $result = $adminObject->check_admin_login();
+        if($result == TRUE) {
+            $_SESSION['administrator'] = $adminID;
+            echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin.php?page=start\'">';
         } else {
-            $wrongpassword = 1;
+            $err_message = "Log in failed. Check that your ID and password are correct."; 
         }
-    } else {
-        $wrongID = 1;
-    }
-
     }
 ?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
-    <script src="main.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="admin.css">
 </head>
 <body>
-
-
-
-    <div>
+    <div class="loginForm">
         <form action="admin_login.php" method="post">
             <div>Administrator ID: <input name="adminID" type="text"></div>
-            <div>Password:         <input name="password" type="text"></div>
+            <div>Password:         <input name="password" type="password"></div>
             <input type="submit" value="Logga in" name="login">
         </form>
     </div>
-
-    <?php
-
-    if($wrongID == 1 || $wrongpassword == 1) {
-        Log in failed. Check that your ID and password are correct.
-    }
-
-    ?>
-
-
+    <div class="errMessage">
+        <p><?php echo $err_message; ?></p>
+    </div>
 </body>
 </html>

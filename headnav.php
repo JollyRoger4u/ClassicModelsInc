@@ -1,6 +1,6 @@
     <header>
         <div>
-            <a href="admin.php?page=start"><img src="Logo.png"></a>
+            <a href="admin.php?page=start"><img src="cmi_logo.png"></a>
         </div>
     </header>
     <nav>
@@ -22,6 +22,9 @@
             </li>
             <li>
                 <a href="admin.php?page=profile">Min Profil</a>
+            </li>
+            <li>
+                <a href="admin_logout.php">Logga ut</a>
             </li>
         </ul>
     </nav>

@@ -1,3 +1,8 @@
+<?php  $session_test = session_start();
+        if(!$session_test) {
+            echo "Session har inte startat";
+        }
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,16 +10,15 @@
     include_once "classes.php";
     // check that you are logged in otherwise reroute to login page
 
-    /*if(!isset($_COOKIE['administrator'])) {
-                echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php\'">';
-    }*/ //enable when tables are complete
+    if(!(isset($_SESSION['administrator']))) {
+        echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'admin_login.php\'">';
+    }
     
     // create a productline object
 
     $productLineObject = new ProductLine;
     $result1 = FALSE;
     $result2 = FALSE;
-    $result3 = FALSE;
     $err_message = "";
     $err_message2 = "";
 
@@ -32,55 +36,18 @@
         $testReturn =  $productLineObject->get_productline();
         $testResult = $testReturn->fetch();
         if($productLine == $testResult['productLine']){
-            $err_message = "There is already an category with this name";
-            $result3 = TRUE;
+            $err_message = "Det finns redan en kategori med detta namn.";
+            $result2 = TRUE;
         } else {
             $result1 = $productLineObject->create_productline();
         }
 
-        if(isset($_FILES["fileToUpload"])&&$result1) {
-
-            if(is_uploaded_file($_FILES["fileToUpload"]["tmp_name"]) ) {
-                $target_file = basename($_FILES["fileToUpload"]["name"]);
-                $uploadOk = 1;
-                $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-                
-                // Check if image file is a actual image or fake image
-                
-                if(isset($_POST["submit"])) {
-                
-                    $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
-                
-                    if($check !== false) {
-                        $uploadOk = 1;
-                    } else {
-                        $err_message = "File is not an image.";
-                        $uploadOk = 0;
-                    }
-                }
-                
-                // check that it has the right type
-                
-                if($imageFileType != "jpg" && $imageFileType != "png" &&
-                $imageFileType != "jpeg"
-                && $imageFileType != "gif" ) {
-                    $err_message = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-                    $uploadOk = 0;
-                } 
-
-                // upload if it passes all checks
-                if($uploadOK==1){
-                    $image = $_FILES['fileToUpload'];
-                    $productLineObject->image = $image;
-                    $result2 = $productLineObject->upload_picture();
-                }
-            }
-        }
-        if($result2 || $result1) {
+        
+        if($result1) {
             echo '<meta HTTP-EQUIV=REFRESH CONTENT="1; \'Admin.php?page=productlines\'">';
-        } elseif($result3){
+        } elseif($result2){
                 
-        } elseif (!$result1) {
+        } else {
             $err_message2 = "Something is wrong in the save function. Contact support.";
         }
     }
@@ -88,10 +55,10 @@
     ?>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>Skapa ny kategori</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
-    <script src="main.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="admin.css">
+    <script src="admin.js"></script>
 </head>
 <body>
 <?php include_once 'headnav.php'; ?> 
