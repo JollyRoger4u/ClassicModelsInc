@@ -5,52 +5,42 @@ require_once "classes.php";
 $cart = [];
 $inCart = false;
 
-//$i = 0;
 $test = new Product;
 if(isset($_COOKIE["cart"])) {
     $cart = unserialize($_COOKIE["cart"]) ;
-}
+} 
+
 if (isset($_POST['buy'])) {
     echo "Varan tillagd i korg";
     
     foreach($cart as &$cart_item) {
         if($cart_item["id"] == $_POST['productid']) {
             $inCart = true;
-            $newnumberofitems = (int) $_POST['noOfProducts'];
+            $newnumberofitems = (int) $_POST['noOfProducts']; // filter_input(INPUT_POST, 'noOfProducts', FILTER_SANITIZE_MAGIC_QUOTES);
             $cart_item['noOfItems'] += $newnumberofitems;
             array_push($cart, $inCart);
             setcookie("cart", serialize($cart), time()+3500);
-//        $i++;
         }
     }
    if (!$inCart) {
-    $inCart = true;
         $cart_item = [
             'id' => $_POST['productid'],
             'noOfItems' => $_POST['noOfProducts']
-        ]; 
-        array_push($cart, $inCart);
-        
-        setcookie("cart", serialize($cart), time()+3500);
-    } 
-    
-
-   /* if(empty($cart)){
-        $cart_item = [
-            'id' => $_POST['productid'],
-            'noOfItems' => $_POST['noOfProducts']
-        ]; 
+        ];
         array_push($cart, $cart_item);
         
         setcookie("cart", serialize($cart), time()+3500);
-        
-    }*/
-    //var_dump($cart); 
+    }
+
+    header('Location: productside.php');
 }
 
 include_once "header.php" ?>
 
 <main>
+        <article> 
+            <a href="shop.php">Tillbaka till shoppen</a> 
+            <form method="post" action="productside.php"> 
     <?php
     if(isset($_GET['product'])) {
     $test->productCode = $_GET['product'];
@@ -59,10 +49,7 @@ include_once "header.php" ?>
     }
     $result = $test->get_product();
     while ($row = $result->fetch()) {
-    ?>
-        <article> 
-            <a href="shop.php">Tillbaka till shoppen</a> 
-            <form method="post" action="productside.php">        
+    ?>       
                 <div class="gallery">
                 <img class="Productimg" src="<?php echo $row['productImage']; ?>">
                 </div>
@@ -72,8 +59,8 @@ include_once "header.php" ?>
                     <p><?php echo $row['MSRP'] ?></p>
                     <input type ="hidden" name="productid" value="<?php echo $row['productCode'] ?>">
                     <input type="number" name="noOfProducts" value="1" min="1">
-                    <input type="submit" name="buy" value="Lägg till i korgen">
-                    <a href="checkout.php">Till kassan</a>
+                    <input type="submit" name="buy" value="Lägg till i korgen"><br>
+                    <a href="varukorg.php"><button class="tillkassan">Till varukorgen</button></a>
                     </div>
                     <?php } ?>     
 

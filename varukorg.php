@@ -10,7 +10,7 @@ if(isset($_COOKIE["cart"])) {
 if (isset($_POST['deleteBtn']) && $_POST['index_to_remove'] != "") {
     foreach($cart as &$cart_item) {
         if($cart_item["id"] == $_POST['index_to_remove']) {
-            $temp = ((int)$cart_item["id"]) -1;
+            $temp = ((int)$cart_item["id"]) - 1;
             unset($cart_item["id"]);
             $cart_item["id"] = $temp;
             
@@ -61,6 +61,7 @@ include_once "header.php" ?>
         <td>&nbsp;</td>
     </tr>
 </table>
+<a href="checkout.php"><button class="tillkassan">Till kassan</button></a>
 </div>
 <?php include_once "footer.php" ?>
 </html>

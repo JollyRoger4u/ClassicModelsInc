@@ -18,7 +18,7 @@ while ($row = $result->fetch()) {
  <img class="productImage" src="<?php echo $row['productImage']; ?>"><br>
  <?php echo $row['productName']; ?></a> <br> 
  <?php echo $row['MSRP']; ?><br>
- <button class="readmore"><a href="productside.php?product=<?php echo $row['productCode']; ?>">Läs mer</a></button></div>
+ <a href="productside.php?product=<?php echo $row['productCode']; ?>"><button class="readmore">Läs mer</button></a></div>
     <?php
    
 }?> 

@@ -90,12 +90,6 @@ width: 100%
     object-fit: contain;
 }
 
-.readmore {
-    width: 32%;
-    padding: 10px;
-    box-sizing: content-box;
-}
-
 .button_group{
   box-sizing: content-box;
     display: flex;
@@ -108,7 +102,6 @@ button {
     border: 1px solid #000;
 }
     
-}
 button:nth-child(2){
 	margin: 0.5em;
 }
@@ -116,74 +109,16 @@ button:hover{
   background: rgba(0,0,0,0.3);
 }
 
-#counter{
-	font-size: 8px;
-	text-align: center;
-  width: 4%;
-  height: 2%;
-  margin-left: 2px;
-  margin-right: 2px;
-  display: block;
- 
-  padding: 1em 0;
-   border: 1px solid #000;
-}
-
-
-
-
-@media (max-width: 893px) {
-    .gallery .small-images {
-        flex: 50%;
-    }
-
-    .gallery .small-images > img {
-        box-sizing: border-box;
-        width: 42%;
-        height: 15%;
-        margin: 0;
-    }
-
-    .gallery .small-images .small_left{
-        margin-left: 5px;
-  }
-  .gallery .small-images .margin {
-    margin-left:1px;
-}
-.varukorg {
-    width: 21%;
-    height: 31px;
+.readmore {
+    width: 32%;
     padding: 10px;
-    font-size: 1.5vw;
-    background-color: black;
-    color: white;
-}
+    box-sizing: content-box;
+    font-size: 10px; 
 }
 
-@media (max-width: 768px) {
-    .gallery .small-images {
-        flex: 50%;
-    }
-
-    .gallery .small-images > img {
-        box-sizing: border-box;
-        width: 42%;
-        height: 15%;
-        margin: 0;
-    }
-
-    .gallery .small-images .small_left{
-        margin-left: 5px;
-  }
-  .gallery .small-images .margin {
-    margin-left:1px;
-}
-.varukorg {
-    width: 21%;
-    height: 31px;
+.tillkassan {
+    width: 20%;
     padding: 10px;
-    font-size: 1.5vw;
-    background-color: black;
-    color: white;
-}
+    box-sizing: content-box;
+    font-size: 13px;   
 }
