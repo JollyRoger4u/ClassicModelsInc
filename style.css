@@ -80,10 +80,6 @@ article {
 width: 100%
 }
 
-.Productimg:hover {
-    opacity: 0.4;
-}
-
 .productImage {
     width: 95%;
     height: 125px;

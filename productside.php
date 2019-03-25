@@ -12,27 +12,28 @@ if(isset($_COOKIE["cart"])) {
 
 if (isset($_POST['buy'])) {
     echo "Varan tillagd i korg";
-    
-    foreach($cart as &$cart_item) {
-        if($cart_item["id"] == $_POST['productid']) {
-            $inCart = true;
-            $newnumberofitems = (int) $_POST['noOfProducts']; // filter_input(INPUT_POST, 'noOfProducts', FILTER_SANITIZE_MAGIC_QUOTES);
-            $cart_item['noOfItems'] += $newnumberofitems;
-            array_push($cart, $inCart);
-            setcookie("cart", serialize($cart), time()+3500);
-        }
-    }
-   if (!$inCart) {
+
+    if (!$inCart) {
         $cart_item = [
-            'id' => $_POST['productid'],
-            'noOfItems' => $_POST['noOfProducts']
+            'id' => filter_input(INPUT_POST, 'productid', FILTER_SANITIZE_MAGIC_QUOTES),
+            'noOfItems' => filter_input(INPUT_POST, 'noOfProducts', FILTER_SANITIZE_MAGIC_QUOTES)
         ];
         array_push($cart, $cart_item);
         
         setcookie("cart", serialize($cart), time()+3500);
     }
-
-    header('Location: productside.php');
+    
+    foreach($cart as $cart_item) {
+        if($cart_item["id"] == $_POST['productid']) {
+            $inCart = true;
+            $newnumberofitems = filter_input(INPUT_POST, 'noOfProducts', FILTER_SANITIZE_MAGIC_QUOTES);
+            $cart_item['noOfItems'] += $newnumberofitems;
+          // array_push($cart, $inCart);
+            setcookie("cart", serialize($cart), time()+3500);
+        }
+    }
+var_dump($cart);
+ 
 }
 
 include_once "header.php" ?>
